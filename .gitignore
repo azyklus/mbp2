@@ -1,0 +1,8 @@
+/**/.DS_Store
+/vendor
+/.idea
+/.fleet
+/.vscode
+/node_modules/
+/target
+/config.json
