@@ -8,4 +8,4 @@ name = "mp2-graphql-server"
 path = "index.rs"
 
 [dependencies]
-mp2 = { path="../../", version="*" }
+mbp2 = { path="../../", version="*" }

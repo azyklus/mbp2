@@ -1,6 +1,6 @@
-//! My Portfolio app v2
+//! My Blog/Portfolio app v2
 //!
-//! `mp2` is my second iteration of my portfolio and blog hosting application.
+//! `mbp2` is my second iteration of my portfolio and blog hosting application.
 //! In this iteration, I use Rust instead of Go and make use of the Rocket server
 //! to handle routing and file serving while handing off the frontend of the app
 //! to TypeScript and the React library.
@@ -38,7 +38,7 @@ mod controllers;
 use controllers::{MainController, NotFoundHandler};
 
 use dotenv::dotenv;
-use mp2::api;
+use mbp2::api;
 use rocket::{
    fairing::AdHoc,
    http::Method::*,
@@ -51,7 +51,7 @@ use rocket::{
 extern crate dotenv;
 #[macro_use]
 extern crate lazy_static;
-extern crate mp2;
+extern crate mbp2;
 extern crate rocket;
 extern crate rocket_contrib;
 extern crate tokio;

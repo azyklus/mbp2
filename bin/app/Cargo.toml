@@ -1,5 +1,5 @@
 [package]
-name = "mp2-app"
+name = "mbp2-app"
 version = "0.3.0"
 edition = "2021"
 
@@ -8,7 +8,7 @@ name = "mp2-app"
 path = "index.rs"
 
 [dependencies]
-mp2 = { path="../../", version="*" }
+mbp2 = { path="../../", version="*" }
 tokio = { version = "1.23.0", features = ["full"] }
 dotenv = "0.15.0"
 rocket_contrib = "0.4.11"

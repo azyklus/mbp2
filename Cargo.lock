@@ -850,6 +850,29 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a3e378b66a060d48947b590737b30a1be76706c8dd7b8ba0f2fe3989c68a853f"
 
 [[package]]
+name = "mbp2"
+version = "0.1.0"
+dependencies = [
+ "lazy_static",
+ "rocket 0.5.0-rc.2",
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
+
+[[package]]
+name = "mbp2-app"
+version = "0.3.0"
+dependencies = [
+ "dotenv",
+ "lazy_static",
+ "mbp2",
+ "rocket 0.5.0-rc.2",
+ "rocket_contrib",
+ "tokio",
+]
+
+[[package]]
 name = "memchr"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -926,33 +949,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "mp2"
-version = "0.1.0"
-dependencies = [
- "lazy_static",
- "rocket 0.5.0-rc.2",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
-name = "mp2-app"
-version = "0.3.0"
-dependencies = [
- "dotenv",
- "lazy_static",
- "mp2",
- "rocket 0.5.0-rc.2",
- "rocket_contrib",
- "tokio",
-]
-
-[[package]]
 name = "mp2-graphql-server"
 version = "0.1.0"
 dependencies = [
- "mp2",
+ "mbp2",
 ]
 
 [[package]]
