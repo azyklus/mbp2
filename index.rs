@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![feature(fs_try_exists)]
 
 /// Reads the configuration file and marshals the JSON
 /// into the [`api::Config`] struct.
@@ -6,14 +7,14 @@
 /// [`api::Config`]: crate::api::config::Config;
 pub fn read_config() -> api::Settings {
    let cfg: api::Settings = api::Settings {
-      Addr: "".to_string(),
-      Db: api::DbSettings { Addr: "".to_string(), State: "".to_string() },
-      A0: api::Auth0Settings {
-         Audience: "".to_string(),
-         Domain: "".to_string(),
-         Id: "".to_string(),
-         Issuer: "".to_string(),
-         Secret: "".to_string()
+      addr: "".to_string(),
+      db: api::DbSettings { addr: "".to_string(), state: "".to_string() },
+      a0: api::Auth0Settings {
+         audience: "".to_string(),
+         domain: "".to_string(),
+         id: "".to_string(),
+         issuer: "".to_string(),
+         secret: "".to_string()
       }
    };
 
@@ -28,4 +29,4 @@ extern crate rocket;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-extern crate serde_json;
+extern crate serde_json as json;

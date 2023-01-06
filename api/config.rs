@@ -1,21 +1,21 @@
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Settings {
-   pub Addr: String,
-   pub Db: DbSettings,
-   pub A0: Auth0Settings,
+   pub addr: String,
+   pub db: DbSettings,
+   pub a0: Auth0Settings,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DbSettings {
-   pub Addr: String,
-   pub State: String,
+   pub addr: String,
+   pub state: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Auth0Settings {
-   pub Audience: String,
-   pub Domain: String,
-   pub Id: String,
-   pub Issuer: String,
-   pub Secret: String,
+   pub audience: String,
+   pub domain: String,
+   pub id: String,
+   pub issuer: String,
+   pub secret: String,
 }

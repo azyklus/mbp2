@@ -26,10 +26,11 @@ impl Handler for MainController {
    }
 }
 
-use rocket::{catcher, Request, Route, Data};
+use rocket::{catcher, Data, Request, Route};
 use rocket::http::{Method::*, Status};
 use rocket::outcome::{IntoOutcome, try_outcome};
 use rocket::response::{Responder, status::Custom};
 use rocket::route::{self, Handler, Outcome};
 
+pub mod api;
 pub mod home;
