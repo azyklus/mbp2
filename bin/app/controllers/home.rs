@@ -22,7 +22,7 @@ pub fn Home() -> Template {
       Parent: "layouts/home".to_string(),
    };
 
-   Template::render("static/index.html", context! {
+   Template::render("index.html", context! {
       title: model.Title,
       parent: model.Parent,
    })

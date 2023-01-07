@@ -18,9 +18,15 @@ ulid = { version = "1.0.0", features = ["serde"] }
 
 [dependencies.rocket]
 git = "https://github.com/SergioBenitez/Rocket"
-branch = "v0.5-rc"
+branch = "master"
 version = "^0.5.0-rc.2"
 features = [ "tls" ]
+
+[dependencies.rocket_dyn_templates]
+git = "https://github.com/SergioBenitez/Rocket"
+branch = "master"
+version = "^0.1.0-rc.2"
+features = [ "handlebars" ]
 
 [workspace]
 members = [

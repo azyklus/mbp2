@@ -11,15 +11,20 @@ path = "index.rs"
 mbp2 = { path="../../", version="*" }
 tokio = { version = "1.23.0", features = ["full"] }
 dotenv = "0.15.0"
-rocket_contrib = "0.4.11"
 lazy_static = "1.4.0"
 figment = { version = "0.10.8", features = ["env", "json", "serde_yaml", "toml", "yaml"] }
-rocket_dyn_templates = { version = "0.1.0-rc.2", features = ["handlebars"] }
 serde = { version = "1.0.152", features = ["derive"] }
 serde_json = "1.0.91"
+handlebars = { version = "4.3.6", features = ["dir_source"] }
 
 [dependencies.rocket]
 git = "https://github.com/SergioBenitez/Rocket"
-branch = "v0.5-rc"
+branch = "master"
 version = "^0.5.0-rc.2"
 features = [ "tls" ]
+
+[dependencies.rocket_dyn_templates]
+git = "https://github.com/SergioBenitez/Rocket"
+branch = "master"
+version = "^0.1.0-rc.2"
+features = [ "handlebars" ]

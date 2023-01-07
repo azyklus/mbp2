@@ -1,5 +1,7 @@
 # Except for the secret key, none of these are actually needed; Rocket has sane
 # defaults. We show all of them here explicitly for demonstrative purposes.
+[default]
+template_dir = "web"
 
 [global.limits]
 forms = 32768
@@ -14,6 +16,7 @@ keep_alive = 5
 log = "normal"
 hi = "Hello!" # this is an unused extra; maybe application specific?
 is_extra = true # this is an unused extra; maybe application specific?
+template_dir = "web"
 
 [staging]
 address = "0.0.0.0"
@@ -23,6 +26,7 @@ keep_alive = 5
 log = "normal"
 # don't use this key! generate your own and keep it private!
 secret_key = "8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg="
+template_dir = "web"
 
 [production]
 address = "0.0.0.0"
@@ -32,3 +36,4 @@ keep_alive = 5
 log = "critical"
 # don't use this key! generate your own and keep it private!
 secret_key = "hPRYyVRiMyxpw5sBB1XeCMN1kFsDCqKvBi2QJxBVHQk="
+template_dir = "web"

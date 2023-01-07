@@ -5,7 +5,7 @@ pub fn ReadRocketConfig(rocket: &Config, app: &State<Config>) -> String {
 
 #[rocket::get("/api/rocket")]
 pub fn Rocket() -> String {
-   return "My 🚀 server".to_string();
+   return "🚀 server v0.5.0-rc.2".to_string();
 }
 
 #[doc(hidden)]

@@ -5,7 +5,18 @@
 //! to handle routing and file serving while handing off the frontend of the app
 //! to TypeScript and the React library.
 #![allow(non_snake_case)]
-#![feature(decl_macro)]
+#![feature(decl_macro, proc_macro_hygiene)]
+
+lazy_static!{
+   pub static ref HOME_ROUTES: Vec<Route> = rocket::routes![
+      Index, home::Home,
+   ];
+
+   pub static ref API_ROUTES: Vec<Route> = rocket::routes![
+      api::ReadRocketConfig,
+      api::Rocket,
+   ];
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -31,25 +42,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
    // Our mounted base routes.
    let nfc: Catcher = Catcher::new(404, NotFoundHandler);
    //let index = Route::new(Get, "/", controllers::home::Index);
+   let index: Route = (&HOME_ROUTES).get(0).unwrap().clone();
+   let home: Route = (&HOME_ROUTES).get(1).unwrap().clone();
 
    // Our mounted API routes.
-   let _config = controllers::api::ReadRocketConfig;
+   let apiConfig: Route = (&API_ROUTES).get(0).unwrap().clone();
+   let apiRocket: Route = (&API_ROUTES).get(1).unwrap().clone();
 
    // Set up our Rocket runtime.
    let rt = rocket::custom(fig)
       .attach(AdHoc::config::<Config>())
-      .attach(Arc::new(Template::fairing()))
+      .attach(Template::try_custom(|e| {
+         models::Customise(&mut e.handlebars);
+         Ok(())
+      }))
       .mount("/", FileServer::from(workDir))
-      .mount("/", rocket::routes![
-         Index
-      ])
-      .mount("/home", rocket::routes![
-         home::Home
-      ])
-      .mount("/api", rocket::routes![
-         api::Rocket,
-         api::ReadRocketConfig,
-      ])
+      .mount("/", vec![index])
+      .mount("/api", vec![apiConfig, apiRocket])
+      .mount("/home", vec![home])
       .register("/", vec![nfc]);
 
    // Check state and launch Rocket.
@@ -80,8 +90,8 @@ use {
       fs::FileServer,
       Catcher,
       Config,
+      Route,
    },
-   std::sync::Arc,
    tmpl::Template,
 };
 
@@ -94,7 +104,6 @@ extern crate figment;
 extern crate lazy_static;
 extern crate mbp2;
 extern crate rocket;
-extern crate rocket_contrib as contrib;
 #[macro_use]
 extern crate rocket_dyn_templates as tmpl;
 #[macro_use]

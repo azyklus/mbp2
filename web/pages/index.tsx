@@ -1,5 +1,5 @@
 import { Main } from '../components/layouts/Main';
-import { ReactDOMClient, createRoot } from 'react-dom';
+import { createRoot } from 'react-dom';
 
 export default function Home() {
    return <Main />;
