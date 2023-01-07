@@ -1,7 +1,14 @@
-#[rocket::get("/config")]
-pub fn ReadConfig(rocket: &Config, app: &State<api::Settings>) -> String {
+#[rocket::get("/rocket_config")]
+pub fn ReadRocketConfig(rocket: &Config, app: &State<Config>) -> String {
    return format!("{:#?}\n{:#?}", app, rocket);
 }
 
-use mbp2::api;
+#[rocket::get("/api/rocket")]
+pub fn Rocket() -> String {
+   return "My 🚀 server".to_string();
+}
+
+#[doc(hidden)]
+pub fn ReadAppConfig() {}
+
 use rocket::{Config, State};

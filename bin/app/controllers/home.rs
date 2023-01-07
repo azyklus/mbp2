@@ -1,13 +1,10 @@
+/*
 pub fn Index<'r>(req: &'r Request, _data: Data<'r>) -> route::BoxFuture<'r> {
    Box::pin(async move {
-      let mut workDir: String = std::env::var("WORK_DIR").expect("could not load var");
-      workDir.push_str("/static");
+      //let mut workDir: String = std::env::var("WORK_DIR").expect("could not load var");
+      //workDir.push_str("/web");
 
-      let mut path: PathBuf = Path::new(&workDir).join("/web");
-      if path.is_dir() {
-         path.push("/index.html");
-      }
-
+      let path = Path::new("web/index.html");//.join("/static");
       if let Some(file) = NamedFile::open(path).await.ok() {
          return route::Outcome::from(req, tokio::fs::read_to_string(file.path()).await.ok());
       }
@@ -16,14 +13,20 @@ pub fn Index<'r>(req: &'r Request, _data: Data<'r>) -> route::BoxFuture<'r> {
       route::Outcome::from(req, responder)
    })
 }
+*/
 
-use rocket::{
-   http::Status,
-   response::{content, status},
-   route,
-   fs::NamedFile,
-   Data,
-   Request,
-};
+#[rocket::get("/")]
+pub fn Home() -> Template {
+   let model: HomeModel = HomeModel {
+      Title: "Other Skies".to_string(),
+      Parent: "layouts/home".to_string(),
+   };
 
-use std::path::{PathBuf, Path};
+   Template::render("static/index.html", context! {
+      title: model.Title,
+      parent: model.Parent,
+   })
+}
+
+use crate::models::home::HomeModel;
+use tmpl::Template;

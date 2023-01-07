@@ -7,18 +7,22 @@
 #![allow(non_snake_case)]
 #![feature(decl_macro)]
 
-#[rocket::main]
-async fn main() -> Result<(), rocket::Error> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
    // Load dotenv file.
    dotenv().ok();
 
-   let cfg: api::Settings = api::DefaultSettings();
+   // Load configuration file.
+   let mut cfg: Settings = DefaultSettings();
+   if let Err(e) = ApplySettings(&mut cfg) {
+      return Err(e.into());
+   }
 
    // Load our configuration into a Figment.
    let fig: Figment = Figment::new()
+      .merge(Toml::file("Rocket.toml").nested())
       .merge(Serialized::defaults(Config::default()))
-      .merge(Json::file("config.json").nested())
-      .merge(Env::prefixed("MBP2_").global())
+      .merge(Env::prefixed("ROCKET_").global())
       .select(Profile::from_env_or("APP_PROFILE", "default"));
 
    let mut workDir: String = std::env::var("WORK_DIR").expect("could not load var");
@@ -26,51 +30,63 @@ async fn main() -> Result<(), rocket::Error> {
 
    // Our mounted base routes.
    let nfc: Catcher = Catcher::new(404, NotFoundHandler);
-   let index = Route::new(Get, "/", controllers::home::Index);
+   //let index = Route::new(Get, "/", controllers::home::Index);
 
    // Our mounted API routes.
-   let _config = controllers::api::ReadConfig;
+   let _config = controllers::api::ReadRocketConfig;
 
    // Set up our Rocket runtime.
    let rt = rocket::custom(fig)
-      .attach(AdHoc::config::<api::Settings>())
-      .mount("/", vec![index])
-      .mount("/api", rocket::routes![controllers::api::ReadConfig])
+      .attach(AdHoc::config::<Config>())
+      .attach(Arc::new(Template::fairing()))
+      .mount("/", FileServer::from(workDir))
+      .mount("/", rocket::routes![
+         Index
+      ])
+      .mount("/home", rocket::routes![
+         home::Home
+      ])
+      .mount("/api", rocket::routes![
+         api::Rocket,
+         api::ReadRocketConfig,
+      ])
       .register("/", vec![nfc]);
 
    // Check state and launch Rocket.
    assert!(rt.state::<String>().is_none());
-   if let Err(e) = rt.ignite().await {
-      return Err(e);
+   if let Err(e) = rt.launch().await {
+      return Err(e.into());
    }
 
    return Ok(());
 }
 
 use {
-   controllers::{MainController, NotFoundHandler},
+   self::controllers::*,
    dotenv::dotenv,
    figment::{
       Figment,
       Profile,
       providers::{
+         Env,
          Format,
-         Json,
          Serialized,
-         Env
+         Toml,
       }
    },
-   mbp2::api,
+   mbp2::api::{ApplySettings, DefaultSettings, Settings},
    rocket::{
       fairing::AdHoc,
-      http::Method::*,
+      fs::FileServer,
       Catcher,
       Config,
-      Route,
    },
+   std::sync::Arc,
+   tmpl::Template,
 };
 
 mod controllers;
+mod models;
 
 extern crate dotenv;
 extern crate figment;
@@ -78,5 +94,10 @@ extern crate figment;
 extern crate lazy_static;
 extern crate mbp2;
 extern crate rocket;
-extern crate rocket_contrib;
+extern crate rocket_contrib as contrib;
+#[macro_use]
+extern crate rocket_dyn_templates as tmpl;
+#[macro_use]
+extern crate serde;
+extern crate serde_json as json;
 extern crate tokio;

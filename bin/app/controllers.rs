@@ -1,3 +1,8 @@
+#[rocket::get("/")]
+pub async fn Index() -> Redirect {
+   Redirect::to("/index.html")
+}
+
 pub fn NotFoundHandler<'r>(_: Status, req: &'r Request) -> catcher::BoxFuture<'r> {
    let responder = Custom(Status::NotFound, format!("Couldn't find: {}", req.uri()));
    Box::pin(async move { responder.respond_to(req) })
@@ -29,7 +34,7 @@ impl Handler for MainController {
 use rocket::{catcher, Data, Request, Route};
 use rocket::http::{Method::*, Status};
 use rocket::outcome::{IntoOutcome, try_outcome};
-use rocket::response::{Responder, status::Custom};
+use rocket::response::{Redirect, Responder, status::Custom};
 use rocket::route::{self, Handler, Outcome};
 
 pub mod api;

@@ -551,6 +551,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "handlebars"
+version = "4.3.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "035ef95d03713f2c347a72547b7cd38cbc9af7cd51e6099fb62d586d4a6dee3a"
+dependencies = [
+ "log 0.4.17",
+ "pest",
+ "pest_derive",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -856,10 +870,11 @@ name = "mbp2"
 version = "0.1.0"
 dependencies = [
  "lazy_static",
- "rocket 0.5.0-rc.2",
+ "rocket 0.5.0-rc.2 (git+https://github.com/SergioBenitez/Rocket?branch=v0.5-rc)",
  "serde",
  "serde_derive",
  "serde_json",
+ "ulid",
 ]
 
 [[package]]
@@ -870,8 +885,11 @@ dependencies = [
  "figment",
  "lazy_static",
  "mbp2",
- "rocket 0.5.0-rc.2",
+ "rocket 0.5.0-rc.2 (git+https://github.com/SergioBenitez/Rocket?branch=v0.5-rc)",
  "rocket_contrib",
+ "rocket_dyn_templates",
+ "serde",
+ "serde_json",
  "tokio",
 ]
 
@@ -986,6 +1004,15 @@ checksum = "74d0df99cfcd2530b2e694f6e17e7f37b8e26bb23983ac530c0c97408837c631"
 dependencies = [
  "cfg-if 0.1.10",
  "libc",
+ "winapi 0.3.9",
+]
+
+[[package]]
+name = "normpath"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "04aaf5e9cb0fbf883cc0423159eacdf96a9878022084b35c462c428cab73bcaf"
+dependencies = [
  "winapi 0.3.9",
 ]
 
@@ -1124,6 +1151,50 @@ name = "percent-encoding"
 version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "478c572c3d73181ff3c2539045f6eb99e5491218eae919370993b890cdbdd98e"
+
+[[package]]
+name = "pest"
+version = "2.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0f6e86fb9e7026527a0d46bc308b841d73170ef8f443e1807f6ef88526a816d4"
+dependencies = [
+ "thiserror",
+ "ucd-trie",
+]
+
+[[package]]
+name = "pest_derive"
+version = "2.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "96504449aa860c8dcde14f9fba5c58dc6658688ca1fe363589d6327b8662c603"
+dependencies = [
+ "pest",
+ "pest_generator",
+]
+
+[[package]]
+name = "pest_generator"
+version = "2.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "798e0220d1111ae63d66cb66a5dcb3fc2d986d520b98e49e1852bfdb11d7c5e7"
+dependencies = [
+ "pest",
+ "pest_meta",
+ "proc-macro2 1.0.49",
+ "quote 1.0.23",
+ "syn 1.0.107",
+]
+
+[[package]]
+name = "pest_meta"
+version = "2.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "984298b75898e30a843e278a9f2452c31e349a073a0ce6fd950a12a74464e065"
+dependencies = [
+ "once_cell",
+ "pest",
+ "sha1",
+]
 
 [[package]]
 name = "pin-project-lite"
@@ -1335,6 +1406,44 @@ dependencies = [
 [[package]]
 name = "rocket"
 version = "0.5.0-rc.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "98ead083fce4a405feb349cf09abdf64471c6077f14e0ce59364aa90d4b99317"
+dependencies = [
+ "async-stream",
+ "async-trait",
+ "atomic",
+ "atty",
+ "binascii",
+ "bytes",
+ "either",
+ "figment",
+ "futures",
+ "indexmap",
+ "log 0.4.17",
+ "memchr",
+ "multer",
+ "num_cpus",
+ "parking_lot",
+ "pin-project-lite",
+ "rand",
+ "ref-cast",
+ "rocket_codegen 0.5.0-rc.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rocket_http 0.5.0-rc.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
+ "state 0.5.3",
+ "tempfile",
+ "time 0.3.17",
+ "tokio",
+ "tokio-stream",
+ "tokio-util",
+ "ubyte",
+ "version_check 0.9.4",
+ "yansi",
+]
+
+[[package]]
+name = "rocket"
+version = "0.5.0-rc.2"
 source = "git+https://github.com/SergioBenitez/Rocket?branch=v0.5-rc#6778089c129ee15dfd524413f067c9c572226159"
 dependencies = [
  "async-stream",
@@ -1355,8 +1464,8 @@ dependencies = [
  "pin-project-lite",
  "rand",
  "ref-cast",
- "rocket_codegen 0.5.0-rc.2",
- "rocket_http 0.5.0-rc.2",
+ "rocket_codegen 0.5.0-rc.2 (git+https://github.com/SergioBenitez/Rocket?branch=v0.5-rc)",
+ "rocket_http 0.5.0-rc.2 (git+https://github.com/SergioBenitez/Rocket?branch=v0.5-rc)",
  "serde",
  "state 0.5.3",
  "tempfile",
@@ -1387,6 +1496,22 @@ dependencies = [
 [[package]]
 name = "rocket_codegen"
 version = "0.5.0-rc.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d6aeb6bb9c61e9cd2c00d70ea267bf36f76a4cc615e5908b349c2f9d93999b47"
+dependencies = [
+ "devise 0.3.1",
+ "glob",
+ "indexmap",
+ "proc-macro2 1.0.49",
+ "quote 1.0.23",
+ "rocket_http 0.5.0-rc.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 1.0.107",
+ "unicode-xid 0.2.4",
+]
+
+[[package]]
+name = "rocket_codegen"
+version = "0.5.0-rc.2"
 source = "git+https://github.com/SergioBenitez/Rocket?branch=v0.5-rc#6778089c129ee15dfd524413f067c9c572226159"
 dependencies = [
  "devise 0.3.1",
@@ -1394,7 +1519,7 @@ dependencies = [
  "indexmap",
  "proc-macro2 1.0.49",
  "quote 1.0.23",
- "rocket_http 0.5.0-rc.2",
+ "rocket_http 0.5.0-rc.2 (git+https://github.com/SergioBenitez/Rocket?branch=v0.5-rc)",
  "syn 1.0.107",
  "unicode-xid 0.2.4",
 ]
@@ -1413,6 +1538,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "rocket_dyn_templates"
+version = "0.1.0-rc.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bab13df598440527c200f46fb944dc55d8d67a1818b617eb5a3981dcd8b63fd2"
+dependencies = [
+ "glob",
+ "handlebars",
+ "normpath",
+ "notify",
+ "rocket 0.5.0-rc.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "rocket_http"
 version = "0.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1427,6 +1565,33 @@ dependencies = [
  "state 0.4.2",
  "time 0.1.45",
  "unicode-xid 0.1.0",
+]
+
+[[package]]
+name = "rocket_http"
+version = "0.5.0-rc.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2ded65d127954de3c12471630bf4b81a2792f065984461e65b91d0fdaafc17a2"
+dependencies = [
+ "cookie 0.16.2",
+ "either",
+ "futures",
+ "http",
+ "hyper 0.14.23",
+ "indexmap",
+ "log 0.4.17",
+ "memchr",
+ "pear 0.2.3",
+ "percent-encoding 2.2.0",
+ "pin-project-lite",
+ "ref-cast",
+ "serde",
+ "smallvec",
+ "stable-pattern",
+ "state 0.5.3",
+ "time 0.3.17",
+ "tokio",
+ "uncased",
 ]
 
 [[package]]
@@ -1573,6 +1738,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha1"
+version = "0.10.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f04293dc80c3993519f2d7f6f511707ee7094fe0c6d3406feb330cdb3540eba3"
+dependencies = [
+ "cfg-if 1.0.0",
+ "cpufeatures",
+ "digest",
+]
+
+[[package]]
 name = "sha2"
 version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1702,6 +1878,26 @@ dependencies = [
  "redox_syscall",
  "remove_dir_all",
  "winapi 0.3.9",
+]
+
+[[package]]
+name = "thiserror"
+version = "1.0.38"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a9cd18aa97d5c45c6603caea1da6628790b37f7a34b6ca89522331c5180fed0"
+dependencies = [
+ "thiserror-impl",
+]
+
+[[package]]
+name = "thiserror-impl"
+version = "1.0.38"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1fb327af4685e4d03fa8cbcf1716380da910eeb2bb8be417e7f9fd3fb164f36f"
+dependencies = [
+ "proc-macro2 1.0.49",
+ "quote 1.0.23",
+ "syn 1.0.107",
 ]
 
 [[package]]
@@ -1949,6 +2145,22 @@ version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c81f0dae7d286ad0d9366d7679a77934cfc3cf3a8d67e82669794412b2368fe6"
 dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "ucd-trie"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9e79c4d996edb816c91e4308506774452e55e95c3c9de07b6729e17e15a5ef81"
+
+[[package]]
+name = "ulid"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "13a3aaa69b04e5b66cc27309710a569ea23593612387d67daaf102e73aa974fd"
+dependencies = [
+ "rand",
  "serde",
 ]
 
