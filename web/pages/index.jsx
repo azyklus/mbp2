@@ -71,7 +71,7 @@ class Home extends React.Component {
          <div className="container">
             <div className="col-xs-8 col-xs-offset-2 jumbotron text-center">
                <h1>Other Skies Blog</h1>
-               <div className={"container", "row"}>
+               <div className={"container row"}>
                   <span>
                      <a rel="me" href="https://social.undrground.org/@az">@az@social.undrground.org</a>
                   </span>
@@ -106,7 +106,7 @@ class LoggedIn extends React.Component {
          <div className="container">
             <div className="col-xs-8 col-xs-offset-2 jumbotron text-center">
                <h1>Other Skies Blog</h1>
-               <div className={"container", "row"}>
+               <div className={"container row"}>
                   <span>
                      <a rel="me" href="https://social.undrground.org/@az">@az@social.undrground.org</a>
                   </span>
