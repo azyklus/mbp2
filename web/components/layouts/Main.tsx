@@ -6,9 +6,9 @@ import { useLockBodyScroll } from 'react-use';
 import dynamic from 'next/dynamic';
 import {
   ClientConfigStore,
-  isChatAvailableSelector,
+  IsChatAvailableSelector,
   ClientConfigStateAtom,
-  fatalErrorStateAtom,
+  FatalErrorStateAtom,
 } from '../stores/ClientConfigStore';
 import { ClientConfig } from '../../interfaces/client-config.model';
 
@@ -25,6 +25,7 @@ const fatalErrorStateModal = dynamic(
 
 export const Main: FC = () => {
    const clientConfig = useRecoilValue<ClientConfig>(ClientConfigStateAtom);
+   const { name, title, customStyles } = clientConfig;
 
    const layoutRef = useRef<HTMLDivElement>(null);
    const isProduction = process.env.NODE_ENV === 'production';
