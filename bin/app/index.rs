@@ -4,14 +4,20 @@
 //! In this iteration, I use Rust instead of Go and make use of the Rocket server
 //! to handle routing and file serving while handing off the frontend of the app
 //! to TypeScript and the React library.
+#![warn(missing_docs)]
 #![allow(non_snake_case)]
-#![feature(decl_macro, proc_macro_hygiene)]
+#![feature(
+   decl_macro,
+   proc_macro_hygiene
+)]
 
 lazy_static!{
+   /// Root and /home routes.
    pub static ref HOME_ROUTES: Vec<Route> = rocket::routes![
       Index, home::Home,
    ];
 
+   /// API level routes.
    pub static ref API_ROUTES: Vec<Route> = rocket::routes![
       api::ReadRocketConfig,
       api::Rocket,
@@ -53,7 +59,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
    let rt = rocket::custom(fig)
       .attach(AdHoc::config::<Config>())
       .attach(Template::try_custom(|e| {
-         models::Customise(&mut e.handlebars);
+         let _ = models::Customise(&mut e.handlebars).unwrap();
+
          Ok(())
       }))
       .mount("/", FileServer::from(workDir))
