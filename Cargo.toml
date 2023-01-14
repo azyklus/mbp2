@@ -30,6 +30,7 @@ features = [ "handlebars" ]
 
 [workspace]
 members = [
-   "bin/app",
-   "bin/graphql-server",
+   "web",
+   "bin/server",
+   "bin/graphql",
 ]

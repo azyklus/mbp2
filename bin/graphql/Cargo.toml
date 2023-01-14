@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "mp2-graphql-server"
+name = "mp2_graphql"
 path = "index.rs"
 
 [dependencies]

@@ -1,6 +1,6 @@
 #[rocket::get("/")]
 pub async fn Index() -> Redirect {
-   Redirect::to("/index.html")
+   Redirect::to("/dist/index.html")
 }
 
 pub fn NotFoundHandler<'r>(_: Status, req: &'r Request) -> catcher::BoxFuture<'r> {

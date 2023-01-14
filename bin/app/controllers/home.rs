@@ -17,15 +17,15 @@ pub fn Index<'r>(req: &'r Request, _data: Data<'r>) -> route::BoxFuture<'r> {
 
 #[rocket::get("/")]
 pub fn Home() -> Template {
-   let model: HomeModel = HomeModel {
+   let model: HomeModel = HomeModel{
       Title: "Other Skies".to_string(),
       Parent: "layouts/home".to_string(),
    };
 
-   Template::render("index.html", context! {
+   return Template::render("index.html", context!{
       title: model.Title,
       parent: model.Parent,
-   })
+   });
 }
 
 use crate::models::home::HomeModel;

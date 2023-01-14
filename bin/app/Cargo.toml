@@ -1,10 +1,11 @@
 [package]
-name = "mbp2-app"
+name = "mbp2-backend"
 version = "0.3.0"
 edition = "2021"
+build = "build.rs"
 
 [[bin]]
-name = "mbp2-app"
+name = "mbp2_backend"
 path = "index.rs"
 
 [dependencies]
@@ -21,7 +22,7 @@ handlebars = { version = "4.3.6", features = ["dir_source"] }
 git = "https://github.com/SergioBenitez/Rocket"
 branch = "master"
 version = "^0.5.0-rc.2"
-features = [ "tls" ]
+features = [ "json", "tls" ]
 
 [dependencies.rocket_dyn_templates]
 git = "https://github.com/SergioBenitez/Rocket"
