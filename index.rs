@@ -11,6 +11,8 @@ pub fn NewConfig() -> api::Settings {
 pub mod assets;
 pub mod api;
 
+#[macro_use]
+extern crate common_macros as macros;
 extern crate rocket;
 #[macro_use]
 extern crate serde;

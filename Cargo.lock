@@ -157,6 +157,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8100e46ff92eb85bf6dc2930c73f2a4f7176393c84a9446b3d501e1b354e7b34"
 
 [[package]]
+name = "common_macros"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3f6d59c71e7dc3af60f0af9db32364d96a16e9310f3f5db2b55ed642162dd35"
+
+[[package]]
 name = "console_error_panic_hook"
 version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -971,6 +977,7 @@ dependencies = [
 name = "mbp2"
 version = "0.1.0"
 dependencies = [
+ "common_macros",
  "lazy_static",
  "rocket",
  "rocket_dyn_templates",
@@ -984,6 +991,7 @@ dependencies = [
 name = "mbp2-backend"
 version = "0.3.0"
 dependencies = [
+ "common_macros",
  "dotenv",
  "figment",
  "handlebars",

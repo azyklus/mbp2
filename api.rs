@@ -24,18 +24,50 @@ pub fn ApplySettings(cfg: &mut Settings) -> Result<bool, io::Error> {
    return Ok(true);
 }
 
-#[inline]
+#[inline(always)]
 pub fn DefaultSettings() -> Settings {
    return Settings{
-      Addr: "".to_string(),
-      Db: DbSettings{ Addr: "".to_string(), State: "".to_string() },
+      Addr: String::new(),
+      MaxSocketPayloadSize: 0,
+      SocketHostOverride: None,
+      Client: DefaultClientConfig(),
+      Db: DbSettings{ Addr: String::new(), State: String::new() },
       Auth0: Auth0Settings{
-         Audience: "".to_string(),
-         Domain: "".to_string(),
-         Identifier: "".to_string(),
-         Issuer: "".to_string(),
-         Secret: "".to_string()
+         Audience: String::new(),
+         Domain: String::new(),
+         Identifier: String::new(),
+         Issuer: String::new(),
+         Secret: String::new(),
       }
+   };
+}
+
+/// DefaultClientConfig creates a default [`ClientConfig`] instance.
+///
+/// [`ClientConfig`]: self::config::ClientConfig
+#[inline(always)]
+pub fn DefaultClientConfig() -> ClientConfig {
+   return ClientConfig{
+      Name: String::new(),
+      Summary: String::new(),
+      Tags: vec![],
+      NSFW: false,
+      Logo: String::new(),
+      Version: String::new(),
+      AppearanceVariables: hash_map!{},
+      CustomStyles: String::new(),
+      SocialHandles: vec![],
+      Federation: Federation{
+         Enabled: true,
+         Account: String::new(),
+         FollowerCount: 0,
+      },
+      Notifications: Notifications{
+         Browser: Browser{
+            Enabled: false,
+            PublicKey: String::new(),
+         },
+      },
    };
 }
 
