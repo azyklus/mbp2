@@ -1,6 +1,21 @@
+async fn getIndex() -> Result<NamedFile, NotFound<String>> {
+   NamedFile::open("index.html")
+      .await
+      .map_err(|e| NotFound(e.to_string()))
+}
+
+#[rocket::get("/<path..>")]
+pub async fn DistFiles(path: PathBuf) -> Result<NamedFile, NotFound<String>> {
+   let path = PathBuf::from("../../web/dist").join(path);
+   match NamedFile::open(path).await {
+      Ok(f) => Ok(f),
+      Err(_) => getIndex().await,
+   }
+}
+
 #[rocket::get("/")]
-pub async fn Index() -> Redirect {
-   Redirect::to("/dist/index.html")
+pub async fn Index() -> Result<NamedFile, NotFound<String>> {
+   NamedFile::open("/index.html").await.map_err(|e| NotFound(e.to_string()))
 }
 
 pub fn NotFoundHandler<'r>(_: Status, req: &'r Request) -> catcher::BoxFuture<'r> {
@@ -32,10 +47,12 @@ impl Handler for MainController {
 }
 
 use rocket::{catcher, Data, Request, Route};
+use rocket::fs::NamedFile;
 use rocket::http::{Method::*, Status};
 use rocket::outcome::{IntoOutcome, try_outcome};
-use rocket::response::{Redirect, Responder, status::Custom};
+use rocket::response::{Responder, status::{Custom, NotFound}};
 use rocket::route::{self, Handler, Outcome};
+use std::path::PathBuf;
 
 pub mod api;
 pub mod home;

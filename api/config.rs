@@ -42,6 +42,7 @@ pub struct Federation {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Notifications {
+   #[serde(rename="browser")]
    pub Browser: Browser,
 }
 

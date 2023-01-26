@@ -14,7 +14,7 @@
 lazy_static!{
    /// Root and /home routes.
    pub static ref HOME_ROUTES: Vec<Route> = rocket::routes![
-      Index, home::Home,
+      DistFiles, Index, home::Home,
    ];
 
    /// API level routes.
@@ -43,13 +43,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
       .select(Profile::from_env_or("APP_PROFILE", "default"));
 
    let mut workDir: String = std::env::var("WORK_DIR").expect("could not load var");
-   workDir.push_str("/web");
+   workDir.push_str("/web/dist");
 
    // Our mounted base routes.
    let nfc: Catcher = Catcher::new(404, NotFoundHandler);
    //let index = Route::new(Get, "/", controllers::home::Index);
-   let index: Route = (&HOME_ROUTES).get(0).unwrap().clone();
-   let home: Route = (&HOME_ROUTES).get(1).unwrap().clone();
+   let dist: Route = (&HOME_ROUTES).get(0).unwrap().clone();
+   let index: Route = (&HOME_ROUTES).get(1).unwrap().clone();
+   let home: Route = (&HOME_ROUTES).get(2).unwrap().clone();
 
    // Our mounted API routes.
    let apiConfig: Route = (&API_ROUTES).get(0).unwrap().clone();
@@ -63,8 +64,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
          Ok(())
       }))
+      //.mount("/", vec![index])
       .mount("/", FileServer::from(workDir))
-      .mount("/", vec![index])
       .mount("/api", vec![apiConfig, apiRocket])
       .mount("/home", vec![home])
       .register("/", vec![nfc]);

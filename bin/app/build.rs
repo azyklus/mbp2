@@ -9,6 +9,18 @@ fn main() {
       .current_dir(FRONTEND_DIR)
       .status()
       .expect("could not build frontend");
+
+   Command::new("cp")
+      .args(&["-r", "styles", "dist/styles"])
+      .current_dir(FRONTEND_DIR)
+      .status()
+      .expect("could not copy styles");
+
+   Command::new("cp")
+      .args(&["-r", "js", "dist/js"])
+      .current_dir(FRONTEND_DIR)
+      .status()
+      .expect("could not copy js");
 }
 
 use std::process::Command;

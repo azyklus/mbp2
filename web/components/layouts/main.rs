@@ -1,17 +1,17 @@
-pub struct Main{}
+pub struct Main {}
 
 impl Component for Main {
-    type Message = Msg;
-    type Properties = ();
+   type Message = Msg;
+   type Properties = ();
 
-    fn create(ctx: &Context<Self>) -> Self {
-        todo!()
-    }
+   fn create(ctx: &Context<Self>) -> Self {
+      todo!()
+   }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        todo!()
-    }
+   fn view(&self, ctx: &Context<Self>) -> Html {
+      html!{}
+   }
 }
 
-use super::super::app::Msg;
+use crate::Msg;
 use yew::prelude::*;
