@@ -1,3 +1,6 @@
 {
    "toolchains": [],
+   "emmet.includeLanguages": {
+      "rust": "html",
+   }
 }

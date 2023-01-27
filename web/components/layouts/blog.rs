@@ -1,5 +1,17 @@
-pub struct Blog;
+pub struct BlogLayout{}
 
-pub struct BlogPost;
+impl Component for BlogLayout {
+    type Message = Msg;
+    type Properties = ();
 
-pub struct BlogPostPreview;
+    fn create(_: &Context<Self>) -> Self {
+        return BlogLayout{};
+    }
+
+    fn view(&self, _: &Context<Self>) -> Html {
+        html!{}
+    }
+}
+
+use crate::Msg;
+use yew::prelude::*;

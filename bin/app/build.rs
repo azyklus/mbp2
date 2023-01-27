@@ -11,16 +11,10 @@ fn main() {
       .expect("could not build frontend");
 
    Command::new("cp")
-      .args(&["-r", "styles", "dist/styles"])
+      .args(&["-r", "static", "dist/static"])
       .current_dir(FRONTEND_DIR)
       .status()
-      .expect("could not copy styles");
-
-   Command::new("cp")
-      .args(&["-r", "js", "dist/js"])
-      .current_dir(FRONTEND_DIR)
-      .status()
-      .expect("could not copy js");
+      .expect("could not copy static files");
 }
 
 use std::process::Command;

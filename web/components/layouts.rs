@@ -1,4 +1,4 @@
 pub mod blog;
-pub use blog::{Blog, BlogPost, BlogPostPreview};
+pub use blog::BlogLayout as Blog;
 pub mod main;
 pub use main::Main;
