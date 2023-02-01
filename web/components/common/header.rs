@@ -1,11 +1,16 @@
 pub struct ContentHeader{}
 
-#[derive(Debug, Deserialize, PartialEq, Properties, Serialize)]
+#[derive(Debug, PartialEq, Properties)]
 pub struct ContentHeaderProps {
+   #[prop_or_default]
+   pub children: Children,
    name: String,
    title: String,
+   #[prop_or_default]
    summary: String,
+   #[prop_or_default]
    tags: String,
+   #[prop_or_default]
    links: Vec<String>,
    logo: String,
 }
@@ -18,13 +23,18 @@ impl Component for ContentHeader {
       return ContentHeader{};
    }
 
-    fn view(&self, _: &Context<Self>) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
       // TODO: Implement content header component.
-      html!{}
+      html!{
+         <Container classes={classes!("col-xs-8", "col-xs-offset-2", "jumbotron", "text-center")}>
+            { ctx.props().children.clone() }
+         </Container>
+      }
    }
 }
 
 use {
    crate::Msg,
+   ybc::*,
    yew::prelude::*,
 };

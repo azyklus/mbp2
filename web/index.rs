@@ -50,6 +50,7 @@ use {
 mod components;
 mod pages;
 
+extern crate gloo;
 extern crate log;
 extern crate pulldown_cmark as cmark;
 extern crate reqwasm;

@@ -1,4 +1,11 @@
-pub struct BlogLayout{}
+pub struct BlogLayout {
+}
+
+#[derive(Clone, Debug, PartialEq, Properties)]
+pub struct BlogProps {
+   #[prop_or_default]
+   pub children: Children,
+}
 
 impl Component for BlogLayout {
     type Message = Msg;

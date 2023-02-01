@@ -23,21 +23,21 @@ impl Component for Navbar {
       let activeClass = if !navActive { "is-active" } else { "" };
 
       let socialsLink = html!{
-         <div>
+         <Container>
             { "Socials" }
-         </div>
+         </Container>
       };
 
       let codeLink = html!{
-         <div>
+         <Container>
             { "Code" }
-         </div>
+         </Container>
       };
 
       html!{
          <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
-               <image class="navbar-item" rel="icon" type="image/svg" src="/static/logo.svg" />
+               <img class="navbar-item is-size-1" type="image/svg+xml" src="/static/logo.svg" width="60px" height="60px" />
                <h1 class="navbar-item is-size-3">{ title }</h1>
 
                <button class={classes!("navbar-burger", "burger", activeClass)}

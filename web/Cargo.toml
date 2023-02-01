@@ -16,6 +16,7 @@ log = "0.4.14"
 pulldown-cmark = { version = "0.9.1", default-features = false }
 reqwasm = "0.4.0"
 serde = { version = "1.0.133", features = ["derive"] }
+gloo = { version = "0.8.0", features = ["futures"] }
 
 [dependencies.ybc]
 git = "https://github.com/SionoiS/ybc"
