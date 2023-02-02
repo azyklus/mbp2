@@ -2,12 +2,12 @@
 
 pub fn SwitchFn(routes: Route) -> Html {
    match routes {
-      Route::Home => {
-         html! { <Home /> }
-      }
-      Route::NotFound => {
-         html! { <NotFound /> }
-      }
+      Route::Home => html! { <Home /> },
+      Route::NotFound => html! { <NotFound /> },
+      Route::Author { id } => html! { <Author id={id} /> },
+      Route::AuthorIndex => html! { <AuthorIndex /> },
+      Route::PostIndex => html! { <BlogPostIndex /> },
+      Route::Post { id } => html!{ <BlogPost id={id} /> },
    }
 }
 
@@ -18,20 +18,21 @@ pub fn main() {
 
 #[derive(Routable, PartialEq, Eq, Clone, Debug)]
 pub enum Route {
-//   #[at("/posts/:id")]
-//   Post{ id: u128 },
-//   #[at("/posts")]
-//   Posts,
-//   #[at("/authors/:id")]
-//   Author{ id: u128 },
-//   #[at("/authors")]
-//   Authors,
+   #[at("/posts/:id")]
+   Post{ id: u128 },
+   #[at("/posts")]
+   PostIndex,
+   #[at("/authors/:id")]
+   Author{ id: u128 },
+   #[at("/authors")]
+   AuthorIndex,
    #[at("/")]
    Home,
    #[not_found]
    #[at("/404")]
    NotFound,
 }
+
 pub enum Msg {
    ToggleNav,
 }
@@ -39,7 +40,7 @@ pub enum Msg {
 use {
    self::{
       components::App,
-      pages::{Home, NotFound},
+      pages::*,
    },
    log::Level,
    router::prelude::*,

@@ -51,8 +51,14 @@ impl Component for Navbar {
             </div>
             <div class={classes!("navbar-menu", activeClass)}>
                <div class="navbar-start">
-                  <Link<Route> classes={classes!("navbar-item")} to={Route::Home}>
+                  <Link<Route> classes={classes!("navbar-item", "no-decoration")} to={Route::Home}>
                      { "Home" }
+                  </Link<Route>>
+                  <Link<Route> classes={classes!("navbar-item", "no-decoration")} to={Route::PostIndex}>
+                     { "Posts" }
+                  </Link<Route>>
+                  <Link<Route> classes={classes!("navbar-item", "no-decoration")} to={Route::AuthorIndex}>
+                     { "Authors" }
                   </Link<Route>>
                   <NavbarDropdown navlink={socialsLink} hoverable=true>
                      <a class="navbar-item" href="https://instagram.com/azyklus">{ "Instagram" }</a>
