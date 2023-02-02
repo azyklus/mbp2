@@ -17,8 +17,13 @@ impl Component for Navbar {
       };
    }
 
-   fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-      return false;
+   fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
+      match msg {
+         Msg::ToggleNav => {
+            self.navActive = !self.navActive;
+            return true;
+         }
+      }
    }
 
    fn view(&self, ctx: &Context<Self>) -> Html {
