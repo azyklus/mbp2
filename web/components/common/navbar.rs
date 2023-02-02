@@ -4,7 +4,7 @@ pub struct Navbar {
 
 #[derive(Debug, PartialEq, Properties)]
 pub struct NavbarProps {
-   pub Title: String,
+   pub title: String,
 }
 
 impl Component for Navbar {
@@ -17,9 +17,13 @@ impl Component for Navbar {
       };
    }
 
+   fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+      return false;
+   }
+
    fn view(&self, ctx: &Context<Self>) -> Html {
       let Self { navActive, .. } = *self;
-      let NavbarProps { Title: title } = ctx.props();
+      let NavbarProps { title } = ctx.props();
       let activeClass = if !navActive { "is-active" } else { "" };
 
       let socialsLink = html!{

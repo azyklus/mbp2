@@ -19,7 +19,7 @@ impl Component for App {
    fn view(&self, _: &Context<Self>) -> Html {
       html!{
          <BrowserRouter>
-            <Navbar Title={"OSB"} />
+            <Navbar title={"OSB"} />
 
             <main>
                <Switch<Route> render={SwitchFn} />
