@@ -1,5 +1,4 @@
-pub struct BlogLayout {
-}
+pub struct BlogLayout{}
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct BlogProps {
@@ -8,16 +7,16 @@ pub struct BlogProps {
 }
 
 impl Component for BlogLayout {
-    type Message = Msg;
-    type Properties = ();
+   type Message = Msg;
+   type Properties = ();
 
-    fn create(_: &Context<Self>) -> Self {
-        return BlogLayout{};
-    }
+   fn create(_: &Context<Self>) -> Self {
+      return BlogLayout{};
+   }
 
-    fn view(&self, _: &Context<Self>) -> Html {
-        html!{}
-    }
+   fn view(&self, _: &Context<Self>) -> Html {
+      html!{}
+   }
 }
 
 use crate::Msg;

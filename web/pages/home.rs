@@ -1,3 +1,5 @@
+pub const HOME_STYLES: &str = include_str!("./home.page.less");
+
 pub struct Home{}
 
 impl Component for Home {
@@ -11,11 +13,19 @@ impl Component for Home {
    fn view(&self, _: &Context<Self>) -> Html {
       html!{
          <Main>
+            <LaunchModal />
          </Main>
       }
    }
 }
 
-use crate::Msg;
-use crate::components::layouts::Main;
-use yew::prelude::*;
+use {
+   crate::{
+      Msg,
+      components::{
+         layouts::Main,
+         modals::LaunchModal,
+      }
+   },
+   yew::prelude::*,
+};

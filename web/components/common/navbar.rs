@@ -2,7 +2,7 @@ pub struct Navbar {
    navActive: bool,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Properties, Serialize)]
+#[derive(Debug, PartialEq, Properties)]
 pub struct NavbarProps {
    pub Title: String,
 }
