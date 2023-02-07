@@ -50,6 +50,7 @@ use {
 
 mod components;
 mod pages;
+mod utils;
 
 extern crate gloo;
 extern crate log;

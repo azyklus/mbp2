@@ -1,11 +1,15 @@
 pub struct BlogPost {}
 
-pub enum BlogPostMsg{}
+pub enum BlogPostMsg {
+   AddFavourite,
+   AddComment(usize, String),
+   RmFavourite,
+   RmComment(usize),
+   TickShare,
+}
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct BlogPostProps {
-   #[prop_or_default]
-   pub title: String,
    pub id: u128,
 }
 
@@ -17,26 +21,14 @@ impl Component for BlogPost {
       return BlogPost {};
    }
 
-   fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-      true
-   }
-
-   fn changed(&mut self, ctx: &Context<Self>, _old_props: &Self::Properties) -> bool {
-      true
-   }
-
-   fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {}
-
-   fn prepare_state(&self) -> Option<String> {
-      None
-   }
-
    fn view(&self, ctx: &Context<Self>) -> Html {
-      let BlogPostProps { title, id } = ctx.props();
+      let BlogPostProps { id } = ctx.props();
 
       html! {
          <Container>
-            <Blog />
+            <Blog>
+               <Markup id={id.to_string()} />
+            </Blog>
          </Container>
       }
    }
@@ -60,6 +52,9 @@ impl Component for BlogPostIndex {
 }
 
 use {
-   crate::components::layouts::Blog,
+   crate::components::{
+      common::Markup,
+      layouts::Blog,
+   },
    ybc::*, yew::prelude::*
 };

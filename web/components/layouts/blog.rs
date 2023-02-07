@@ -8,14 +8,18 @@ pub struct BlogProps {
 
 impl Component for BlogLayout {
    type Message = Msg;
-   type Properties = ();
+   type Properties = BlogProps;
 
    fn create(_: &Context<Self>) -> Self {
       return BlogLayout{};
    }
 
-   fn view(&self, _: &Context<Self>) -> Html {
-      html!{}
+   fn view(&self, ctx: &Context<Self>) -> Html {
+      html!{
+         <div>
+            { ctx.props().children.clone() }
+         </div>
+      }
    }
 }
 
