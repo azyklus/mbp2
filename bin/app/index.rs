@@ -67,8 +67,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
       //.mount("/", vec![index])
       .mount("/", FileServer::from(workDir))
       .mount("/api", vec![apiConfig, apiRocket])
-      .mount("/home", vec![home])
-      .register("/", vec![nfc]);
+      .mount("/home", vec![home]);
+      //.register("/", vec![nfc]);
 
    // Check state and launch Rocket.
    assert!(rt.state::<String>().is_none());

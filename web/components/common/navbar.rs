@@ -18,12 +18,12 @@ impl Component for Navbar {
    }
 
    fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
-      match msg {
+      return match msg {
          Msg::ToggleNav => {
             self.navActive = !self.navActive;
-            return true;
+            true
          }
-      }
+      };
    }
 
    fn view(&self, ctx: &Context<Self>) -> Html {
@@ -31,19 +31,19 @@ impl Component for Navbar {
       let NavbarProps { title } = ctx.props();
       let activeClass = if !navActive { "is-active" } else { "" };
 
-      let socialsLink = html!{
+      let socialsLink = html!(
          <Container>
             { "Socials" }
          </Container>
-      };
+      );
 
-      let codeLink = html!{
+      let codeLink = html!(
          <Container>
             { "Code" }
          </Container>
-      };
+      );
 
-      html!{
+      return html!(
          <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
                <img class="navbar-item is-size-1" type="image/svg+xml" src="/static/logo.svg" width="60px" height="60px" />
@@ -83,7 +83,7 @@ impl Component for Navbar {
                </div>
             </div>
          </nav>
-      }
+      );
    }
 }
 

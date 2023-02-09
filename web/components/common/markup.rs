@@ -28,7 +28,7 @@ impl Markup {
       options.insert(Options::ENABLE_STRIKETHROUGH);
       options.insert(Options::ENABLE_HEADING_ATTRIBUTES);
 
-      match md {
+      return match md {
          FetchState::Success(mu) => {
             let mu = mu.Data.clone();
             let parser: Parser = Parser::new_ext(&mu[..], options);
@@ -38,7 +38,7 @@ impl Markup {
             htmlOut
          },
          _ => "Failed to load...".to_string(),
-      }
+      };
    }
 }
 
@@ -58,12 +58,12 @@ impl Component for Markup {
    }
 
    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-      let uri: String = format!("/api/entry/{}", ctx.props().ID);
+      let uri: String = format!("/api/entry/{}", ctx.props().id);
 
-      match msg {
+      return match msg {
          FetchStateMsg::SetDataFetchState(state) => {
             self.Inner = state;
-            return true;
+            true
          },
          FetchStateMsg::GetData => {
             ctx.link().send_future(async move {
@@ -82,9 +82,9 @@ impl Component for Markup {
 
             ctx.link().send_message(FetchStateMsg::SetDataFetchState(FetchState::Fetching));
 
-            return false;
+            false
          },
-      }
+      };
    }
 
    fn view(&self, ctx: &Context<Self>) -> Html {

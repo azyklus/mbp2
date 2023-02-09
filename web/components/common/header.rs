@@ -2,17 +2,18 @@ pub struct ContentHeader{}
 
 #[derive(Debug, PartialEq, Properties)]
 pub struct ContentHeaderProps {
+   pub name: String,
+   pub logo: String,
    #[prop_or_default]
    pub children: Children,
-   name: String,
-   title: String,
    #[prop_or_default]
-   summary: String,
+   pub classes: Classes,
    #[prop_or_default]
-   tags: String,
+   pub summary: String,
    #[prop_or_default]
-   links: Vec<String>,
-   logo: String,
+   pub tags: String,
+   #[prop_or_default]
+   pub links: Vec<String>,
 }
 
 impl Component for ContentHeader {
@@ -25,11 +26,13 @@ impl Component for ContentHeader {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
       // TODO: Implement content header component.
-      html!{
-         <Container classes={classes!("col-xs-8", "col-xs-offset-2", "jumbotron", "text-center")}>
-            { ctx.props().children.clone() }
+      return html!(
+         <Container classes={ctx.props().classes.clone()}>
+            <Container classes={classes!("col-xs-8", "col-xs-offset-2", "jumbotron", "text-center")}>
+               { ctx.props().children.clone() }
+            </Container>
          </Container>
-      }
+      );
    }
 }
 

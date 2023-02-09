@@ -22,13 +22,13 @@ impl Component for Main {
    }
 
    fn view(&self, ctx: &Context<Self>) -> Html {
-      html!{
+      return html!(
          <Container>
             <Container classes={classes!("justify-content-center", "m-5")}>
                { ctx.props().children.clone() }
             </Container>
          </Container>
-      }
+      );
    }
 }
 

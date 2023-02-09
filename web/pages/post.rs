@@ -1,4 +1,4 @@
-pub struct BlogPost {}
+pub struct BlogPost{}
 
 pub enum BlogPostMsg {
    AddFavourite,
@@ -24,30 +24,36 @@ impl Component for BlogPost {
    fn view(&self, ctx: &Context<Self>) -> Html {
       let BlogPostProps { id } = ctx.props();
 
-      html! {
+      return html!(
          <Container>
             <Blog>
                <Markup id={id.to_string()} />
             </Blog>
          </Container>
-      }
+      );
    }
 }
 
 // INDEX PAGE //
 
-pub struct BlogPostIndex {}
+pub struct BlogPostIndex{}
 
 impl Component for BlogPostIndex {
    type Message = BlogPostMsg;
    type Properties = ();
 
    fn create(ctx: &Context<Self>) -> Self {
-      return BlogPostIndex {};
+      return BlogPostIndex{};
    }
 
    fn view(&self, ctx: &Context<Self>) -> Html {
-      html! {}
+      return html!(
+         <Container>
+            <Blog>
+               <h1>{ "Welcome to the Blog Page!" }</h1>
+            </Blog>
+         </Container>
+      );
    }
 }
 

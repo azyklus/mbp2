@@ -9,32 +9,34 @@ impl Component for App {
    }
 
    fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
-      match msg {
-         Msg::ToggleNav => {}
-      }
-
-      return false;
+      return match msg {
+         Msg::ToggleNav => true,
+      };
    }
 
    fn view(&self, _: &Context<Self>) -> Html {
-      html!{
+      return html!(
          <BrowserRouter>
             <Navbar title={"OSB"} />
 
             <main>
                <Switch<Route> render={SwitchFn} />
             </main>
-            <footer class="footer">
-               <div class="content has-text-centered">
+
+            <Container classes={classes!("footer")}>
+               <Container classes={classes!("content", "has-text-centered")}>
                   { "Powered by " }
                   <a href="https://yew.rs">{ "Yew" }</a>
+                  { " and " }
+                  <a href="https://rocket.rs">{ "Rocket" }</a>
                   { " using " }
                   <a href="https://bulma.io">{ "Bulma" }</a>
-               </div>
-            </footer>
+               </Container>
+            </Container>
+
             <script src="https://cdn.jsdelivr.net/npm/less"></script>
          </BrowserRouter>
-      }
+      );
    }
 }
 
@@ -46,5 +48,5 @@ use {
       SwitchFn,
    },
    router::prelude::*,
-   yew::prelude::*,
+   ybc::*, yew::prelude::*,
 };

@@ -1,17 +1,17 @@
 #![allow(non_snake_case)]
 
 pub fn SwitchFn(routes: Route) -> Html {
-   match routes {
-      Route::Home => html! { <Home /> },
-      Route::NotFound => html! { <NotFound /> },
-      Route::Author { id } => html! { <Author id={id} /> },
-      Route::AuthorIndex => html! { <AuthorIndex /> },
-      Route::PostIndex => html! { <BlogPostIndex /> },
-      Route::Post { id } => html!{ <BlogPost id={id} /> },
-   }
+   return match routes {
+      Route::Home => html!( <Home /> ),
+      Route::NotFound => html!( <NotFound /> ),
+      Route::Author { id } => html!( <Author id={id} /> ),
+      Route::AuthorIndex => html!( <AuthorIndex /> ),
+      Route::PostIndex => html!( <BlogPostIndex /> ),
+      Route::Post { id } => html!( <BlogPost id={id} /> ),
+   };
 }
 
-pub fn main() {
+fn main() {
    wasm_logger::init(Config::new(Level::Trace));
    Renderer::<App>::new().render();
 }

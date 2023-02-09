@@ -4,6 +4,8 @@ pub struct BlogLayout{}
 pub struct BlogProps {
    #[prop_or_default]
    pub children: Children,
+   #[prop_or_default]
+   pub classes: Classes,
 }
 
 impl Component for BlogLayout {
@@ -15,13 +17,17 @@ impl Component for BlogLayout {
    }
 
    fn view(&self, ctx: &Context<Self>) -> Html {
-      html!{
-         <div>
-            { ctx.props().children.clone() }
-         </div>
-      }
+      return html!(
+         <Container classes={ctx.props().classes.clone()}>
+            <Container classes={classes!("justify-content-center", "m-5")}>
+               { ctx.props().children.clone() }
+            </Container>
+         </Container>
+      );
    }
 }
 
-use crate::Msg;
-use yew::prelude::*;
+use {
+   crate::Msg,
+   ybc::*, yew::prelude::*,
+};
