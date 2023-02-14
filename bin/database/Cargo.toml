@@ -1,10 +1,10 @@
 [package]
-name = "mp2-graphql-server"
+name = "mbp2-database"
 version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "mp2_graphql"
+name = "mbp2_database"
 path = "index.rs"
 
 [dependencies]

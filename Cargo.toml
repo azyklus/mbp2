@@ -33,5 +33,5 @@ features = [ "handlebars" ]
 members = [
    "web",
    "bin/app",
-   "bin/graphql",
+   "bin/database",
 ]
