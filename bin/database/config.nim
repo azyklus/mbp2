@@ -1,6 +1,7 @@
 import
    std/[
       jsonutils,
+      logging,
       marshal,
       os, parseopt,
       strformat,
@@ -65,8 +66,8 @@ proc Setup*(): results.Result[Configuration, string] =
          result = results.ok(res)
       except IOError:
          let e = getCurrentException()
-         echo "Got exception ", repr(e), " with message: ", e.msg
-         echo "Error was fatal and this program cannot continue."
+         error "> Got exception ", repr(e), " with message: ", e.msg
+         error "> Error was fatal and this program cannot continue."
 
          result = results.err(fmt "{e.msg}")
       finally:
@@ -82,5 +83,7 @@ proc Setup*(): results.Result[Configuration, string] =
       writeFile("AppSettings.json", configData)
 
       return results.err(fmt "{e.msg}")
+
+   dotenv.load("../..")
 
    return result

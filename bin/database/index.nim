@@ -1,6 +1,9 @@
 # GraphQL API service for the MBP2 program.
 
-import stew/results
+import
+   stew/results,
+   std/logging
+
 from ./config import nil
 
 when defined(release):
@@ -9,12 +12,20 @@ when defined(release):
 #-------#
 
 proc Main() =
-   echo "Hello, World!"
-   echo "Database program for blog/portfolio app, version 2."
+   # Logging handlers
+   var logger = newConsoleLogger()
+   var fileLog = newFileLogger("errors.log", levelThreshold=lvlError)
+   var rollingLog = newRollingFileLogger("rolling.log")
+   addHandler(logger)
+   addHandler(fileLog)
+   addHandler(rollingLog)
+
+   info "> Hello, World!"
+   info "> Database program for blog/portfolio app, version 2."
 
    let cfg = tryGet config.Setup()
 
-   echo "Database bound to ", cfg.BindAddr
+   info "> Database bound to ", cfg.BindAddr
 
 #-------#
 
