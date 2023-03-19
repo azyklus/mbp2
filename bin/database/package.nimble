@@ -17,5 +17,6 @@ requires "nim >= 1.6.10",
          "chronos",
          "stew",
          "unittest2",
+         "https://github.com/treeform/jsony",
          "https://github.com/azyklus/mongo",
          "https://github.com/status-im/nim-graphql"

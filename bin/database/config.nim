@@ -5,10 +5,12 @@ import
       os, parseopt,
       strformat,
       strutils,
+      unicode,
    ],
    chronos
 
 from dotenv import nil
+from jsony import nil
 from std/json import nil
 from stew/results import nil
 
@@ -16,6 +18,7 @@ type
    Schema* = enum
       Blog
       Repository
+      Unknown
 
    VersionCheck* = object
       Major*:    uint8
@@ -31,6 +34,21 @@ type
 var testConfig {.threadvar.}: Configuration
 
 const defaultAddr = "127.0.0.1:8547"
+
+proc enumHook*(s: string): Schema =
+   case s:
+   of "Blog":
+      return Schema.Blog
+   of "Repository":
+      return Schema.Repository
+   else:
+      return Schema.Unknown
+
+proc renameHook*(node: var json.JsonNode, fieldName: var string) =
+   if isLowerAscii fieldName[0]:
+      fieldName[0] = toUpperAscii fieldName[0]
+   elif fieldName == "type":
+      fieldName = "Kind"
 
 proc Setup*(): results.Result[Configuration, string] =
    var res = new Configuration
