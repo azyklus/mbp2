@@ -931,7 +931,14 @@ dependencies = [
 name = "mbp2-database"
 version = "0.1.0"
 dependencies = [
+ "common_macros",
+ "dotenv",
+ "figment",
+ "lazy_static",
  "mbp2",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
