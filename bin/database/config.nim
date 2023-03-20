@@ -8,12 +8,12 @@ import
       strutils,
       unicode,
    ],
+   stew/results,
    chronos
 
 from dotenv import nil
 from jsony import nil
 from std/json import nil
-from stew/results import nil
 
 type
    Schema* = enum
@@ -51,7 +51,7 @@ proc renameHook*(node: var json.JsonNode, fieldName: var string) =
    elif fieldName == "type":
       fieldName = "Kind"
 
-proc Setup*(): results.Result[Configuration, string] =
+proc Setup*(): Result[Configuration, string] =
    var res = new Configuration
    var configFile: File
    var configData: string
@@ -63,13 +63,13 @@ proc Setup*(): results.Result[Configuration, string] =
          configJson = json.parseJson(configData)
 
          res = json.to(configJson, Configuration)
-         result = results.ok(res)
+         result = ok(res)
       except IOError:
          let e = getCurrentException()
          error "> Got exception ", repr(e), " with message: ", e.msg
          error "> Error was fatal and this program cannot continue."
 
-         result = results.err(fmt "{e.msg}")
+         result = err(fmt "{e.msg}")
       finally:
          close(configFile)
    else:
@@ -82,7 +82,7 @@ proc Setup*(): results.Result[Configuration, string] =
 
       writeFile("AppSettings.json", configData)
 
-      return results.err(fmt "{e.msg}")
+      return err(fmt "{e.msg}")
 
    dotenv.load("../..")
 

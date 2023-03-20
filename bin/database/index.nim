@@ -1,8 +1,9 @@
 # GraphQL API service for the MBP2 program.
 
 import
+   std/logging,
    stew/results,
-   std/logging
+   morelogging
 
 from ./config import nil
 
@@ -13,12 +14,9 @@ when defined(release):
 
 proc Main() =
    # Logging handlers
-   var logger = newConsoleLogger()
-   var fileLog = newFileLogger("errors.log", levelThreshold=lvlError)
-   var rollingLog = newRollingFileLogger("rolling.log")
-   addHandler(logger)
-   addHandler(fileLog)
-   addHandler(rollingLog)
+   addHandler newStdoutLogger()
+   addHandler newAsyncRotatingFileLogger(levelThreshold=lvlAll)
+   addHandler newAsyncFileLogger("errors.log", levelThreshold=lvlError)
 
    info "> Hello, World!"
    info "> Database program for blog/portfolio app, version 2."
@@ -29,8 +27,7 @@ proc Main() =
 
 #-------#
 
-when isMainModule:
-   Main()
+when isMainModule: Main()
 
 when defined(release):
    {.pop.}

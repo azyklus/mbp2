@@ -19,4 +19,5 @@ requires "nim >= 1.6.10",
          "unittest2",
          "https://github.com/treeform/jsony",
          "https://github.com/azyklus/mongo",
-         "https://github.com/status-im/nim-graphql"
+         "https://github.com/status-im/nim-graphql",
+         "https://github.com/FedericoCeratto/nim-morelogging"
