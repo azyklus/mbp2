@@ -15,7 +15,7 @@ when defined(release):
 proc Main() =
    # Logging handlers
    addHandler newStdoutLogger()
-   addHandler newAsyncRotatingFileLogger(levelThreshold=lvlAll)
+   addHandler newAsyncRotatingFileLogger(filename_tpl="$datetime.log", levelThreshold=lvlAll)
    addHandler newAsyncFileLogger("errors.log", levelThreshold=lvlError)
 
    info "> Hello, World!"

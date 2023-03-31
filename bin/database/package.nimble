@@ -1,13 +1,12 @@
 # Package
 
 packageName       = "mbp2_db"
-namedBin["index"] = "mbp2_database"
-
 version           = "0.1.0"
 author            = "Yarot Kell"
 description       = "GraphQL API service for MBP2."
 license           = "Apache-2.0"
 srcDir            = "."
+bin               = @["index"]
 
 
 # Dependencies
