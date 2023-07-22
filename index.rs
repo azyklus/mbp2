@@ -1,5 +1,8 @@
 #![allow(non_snake_case)]
-#![feature(fs_try_exists)]
+//#![feature(fs_try_exists)]
+// The above feature decl breaks compilation, and I have yet to determine why.
+// I will uncomment the decl when I fix the problem.
+// -Az
 
 /// NewConfig creates a default [`Settings`] instance.
 ///

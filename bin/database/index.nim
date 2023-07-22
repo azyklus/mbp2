@@ -1,9 +1,11 @@
 # GraphQL API service for the MBP2 program.
 
 import
-   std/logging,
-   stew/results,
-   morelogging
+   mongo,
+   std/[
+      logging, uri
+   ],
+   stew/results
 
 from ./config import nil
 
@@ -14,9 +16,9 @@ when defined(release):
 
 proc Main() =
    # Logging handlers
-   addHandler newStdoutLogger()
-   addHandler newAsyncRotatingFileLogger(filename_tpl="$datetime.log", levelThreshold=lvlAll)
-   addHandler newAsyncFileLogger("errors.log", levelThreshold=lvlError)
+   addHandler newConsoleLogger()
+   addHandler newFileLogger("all.log", levelThreshold=lvlAll)
+   addHandler newRollingFileLogger("errors.log", levelThreshold=lvlError)
 
    info "> Hello, World!"
    info "> Database program for blog/portfolio app, version 2."
@@ -24,6 +26,8 @@ proc Main() =
    let cfg = tryGet config.Setup()
 
    info "> Database bound to ", cfg.BindAddr
+
+   var db = newMongo(parseUri cfg.BindAddr)
 
 #-------#
 
