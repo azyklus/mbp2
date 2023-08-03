@@ -1,0 +1,6 @@
+[submodule "api/mongo"]
+	path = api/mongo
+	url = https://github.com/azyklus/mongo
+[submodule "api/adix"]
+	path = api/adix
+	url = https://github.com/azyklus/adix

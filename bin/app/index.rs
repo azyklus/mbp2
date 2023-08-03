@@ -6,10 +6,10 @@
 //! to TypeScript and the React library.
 #![warn(missing_docs)]
 #![allow(non_snake_case)]
-#![feature(
-   decl_macro,
-   proc_macro_hygiene
-)]
+//#![feature(              // These four lines break compilation.
+//   decl_macro,           // I have yet to determine why, but I will uncomment these lines
+//   proc_macro_hygiene    // when I fix the issue.
+//)]                       // -Az
 
 lazy_static!{
    /// Root and /home routes.

@@ -928,13 +928,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mbp2-database"
-version = "0.1.0"
-dependencies = [
- "mbp2",
-]
-
-[[package]]
 name = "mbp2-frontend"
 version = "0.3.0"
 dependencies = [
