@@ -7,6 +7,4 @@ edition = "2021"
 name = "mbp2_backend_db"
 path = "index.rs"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
