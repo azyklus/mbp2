@@ -92,7 +92,11 @@ use {
          Toml,
       }
    },
-   mbp2::api::{ApplySettings, DefaultSettings, Settings},
+   mbp2::api::{
+      ApplySettings,
+      DefaultSettings,
+      Settings
+   },
    rocket::{
       fairing::AdHoc,
       fs::FileServer,

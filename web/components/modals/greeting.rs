@@ -27,15 +27,11 @@ impl Component for LaunchModal {
                   </Container>
                   <Container>
                      <p>
-                        { "Please sign in for access to donation perks." }
+                        { "Please join the mailing list for weekly stories in your inbox." }
                      </p>
-                     <div class="container" style="width:25%;">
-                        <a href="/" class={classes!("btn", "btn-primary", "btn-lg", "btn-login", "btn-block")}>
-                           { "Sign In" }
-                        </a>
-                     </div>
                      <p>
-                        { "Please consider becoming a Patron today if you are not already!" }
+                        { "Please consider becoming a Patron today if you are not already:" }<br/>
+                        { "Donation perks include early access to Other Skies volumes, Kalion Worlds, and weekly short stories." }
                      </p>
                   </Container>
                </Container>

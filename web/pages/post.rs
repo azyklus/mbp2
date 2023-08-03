@@ -50,7 +50,7 @@ impl Component for BlogPostIndex {
       return html!(
          <Container>
             <Blog>
-               <h1>{ "Welcome to the Blog Page!" }</h1>
+               
             </Blog>
          </Container>
       );

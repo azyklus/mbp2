@@ -81,6 +81,13 @@ impl Component for Navbar {
                      <a class="navbar-item" href="https://sr.ht/~azyklus">{ "Sourcehut" }</a>
                   </NavbarDropdown>
                </div>
+               <div class="navbar-end">
+                  <div class="navbar-item container" style="width:100%;">
+                     <a href="/" class={classes!("btn", "btn-primary", "btn-lg", "btn-login", "btn-block")}>
+                        { "Sign In" }
+                     </a>
+                  </div>
+               </div>
             </div>
          </nav>
       );

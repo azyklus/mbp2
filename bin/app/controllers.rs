@@ -23,6 +23,7 @@ pub fn NotFoundHandler<'r>(_: Status, req: &'r Request) -> catcher::BoxFuture<'r
    Box::pin(async move { responder.respond_to(req) })
 }
 
+/*
 #[derive(Clone)]
 pub struct MainController {
    data: &'static str,
@@ -45,6 +46,7 @@ impl Handler for MainController {
       return Outcome::from(req, format!("{} - {}", self_data, try_outcome!(id)));
    }
 }
+*/
 
 use rocket::{catcher, Data, Request, Route};
 use rocket::fs::NamedFile;
