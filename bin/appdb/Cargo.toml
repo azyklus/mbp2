@@ -8,3 +8,14 @@ name = "mbp2_backend_db"
 path = "index.rs"
 
 [dependencies]
+bson = { version="2", features=["chrono-0_4"] }
+chrono = "0.4" # Used for setting DateTimes
+futures = { version="0.3", features=["compat"] }
+futures-macro = "0.3"
+juniper = { version="0.15", features=["async"] }
+lazy_static = "1.4.0"
+mongodb = "2"
+serde = { version="1", features=["derive"] }
+serde_derive = "1"
+serde_json = "1"
+ulid = { version = "1.0.0", features = ["serde"] }
