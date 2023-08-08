@@ -603,6 +603,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "fs_extra"
+version = "1.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "42703706b716c37f96a77aea830392ad231f44c9e9a67872fa5548707e11b11c"
+
+[[package]]
 name = "fsevent-sys"
 version = "4.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -619,12 +625,19 @@ checksum = "e6d5a32815ae3f33302d95fdcb2ce17862f8c65363dcfd29360480ba1001fc9c"
 
 [[package]]
 name = "futures"
+version = "0.1.31"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3a471a38ef8ed83cd6e40aa59c1ffe17db6855c18e3604d9c4ed8c08ebc28678"
+
+[[package]]
+name = "futures"
 version = "0.3.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23342abe12aba583913b2e62f22225ff9c950774065e4bfb61a19cd9770fec40"
 dependencies = [
  "futures-channel",
  "futures-core",
+ "futures-executor",
  "futures-io",
  "futures-sink",
  "futures-task",
@@ -704,6 +717,7 @@ version = "0.3.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "26b01e40b772d54cf6c6d721c1d1abd0647a0106a12ecaa1c186273392a69533"
 dependencies = [
+ "futures 0.1.31",
  "futures-channel",
  "futures-core",
  "futures-io",
@@ -1271,7 +1285,7 @@ dependencies = [
  "bson 1.2.4",
  "chrono",
  "fnv",
- "futures",
+ "futures 0.3.28",
  "futures-enum",
  "graphql-parser",
  "indexmap 1.9.3",
@@ -1420,26 +1434,40 @@ version = "0.1.0"
 dependencies = [
  "bson 2.6.1",
  "chrono",
+ "futures 0.3.28",
+ "futures-macro",
  "juniper",
+ "lazy_static",
  "mongodb",
  "serde",
+ "serde_derive",
+ "serde_json",
+ "ulid",
 ]
 
 [[package]]
 name = "mbp2-backend"
 version = "0.3.0"
 dependencies = [
+ "bson 2.6.1",
+ "chrono",
  "common_macros",
  "dotenv",
  "figment",
+ "fs_extra",
+ "futures 0.3.28",
+ "futures-macro",
  "handlebars",
+ "juniper",
  "lazy_static",
  "mbp2",
+ "mongodb",
  "rocket",
  "rocket_dyn_templates",
  "serde",
  "serde_json",
  "tokio",
+ "ulid",
 ]
 
 [[package]]
@@ -1789,7 +1817,7 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a829027bd95e54cfe13e3e258a1ae7b645960553fb82b75ff852c29688ee595b"
 dependencies = [
- "futures",
+ "futures 0.3.28",
  "rustversion",
  "thiserror",
 ]
@@ -1862,7 +1890,7 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "03b55e106e5791fa5a13abd13c85d6127312e8e09098059ca2bc9b03ca4cf488"
 dependencies = [
- "futures",
+ "futures 0.3.28",
  "gloo",
  "num_cpus",
  "once_cell",
@@ -2115,7 +2143,7 @@ dependencies = [
  "bytes",
  "either",
  "figment",
- "futures",
+ "futures 0.3.28",
  "indexmap 1.9.3",
  "log",
  "memchr",
@@ -2174,7 +2202,7 @@ source = "git+https://github.com/SergioBenitez/Rocket?branch=master#c2936fcb1e4f
 dependencies = [
  "cookie",
  "either",
- "futures",
+ "futures 0.3.28",
  "http",
  "hyper",
  "indexmap 1.9.3",
@@ -2358,9 +2386,9 @@ checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 
 [[package]]
 name = "serde"
-version = "1.0.181"
+version = "1.0.183"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d3e73c93c3240c0bda063c239298e633114c69a888c3e37ca8bb33f343e9890"
+checksum = "32ac8da02677876d532745a130fc9d8e6edfa81a269b107c5b00829b91d8eb3c"
 dependencies = [
  "serde_derive",
 ]
@@ -2387,9 +2415,9 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.181"
+version = "1.0.183"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be02f6cb0cd3a5ec20bbcfbcbd749f57daddb1a0882dc2e46a6c236c90b977ed"
+checksum = "aafe972d60b0b9bee71a91b92fee2d4fb3c9d7e8f6b179aa99f27203d99a4816"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3505,7 +3533,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5dbecfe44343b70cc2932c3eb445425969ae21754a8ab3a0966981c1cf7af1cc"
 dependencies = [
  "console_error_panic_hook",
- "futures",
+ "futures 0.3.28",
  "gloo",
  "implicit-clone",
  "indexmap 1.9.3",

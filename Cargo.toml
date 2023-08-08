@@ -10,9 +10,9 @@ name = "mbp2"
 path = "index.rs"
 
 [dependencies]
-serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.91"
-serde_derive = "1.0.152"
+serde = { version = "1.0.183", features = ["derive"] }
+serde_json = "1.0.104"
+serde_derive = "1.0.183"
 lazy_static = "1.4.0"
 ulid = { version = "1.0.0", features = ["serde"] }
 common_macros = "0.1.1"

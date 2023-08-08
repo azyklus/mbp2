@@ -6,10 +6,10 @@
 //! to TypeScript and the React library.
 #![warn(missing_docs)]
 #![allow(non_snake_case)]
-//#![feature(              // These four lines break compilation.
-//   decl_macro,           // I have yet to determine why, but I will uncomment these lines
-//   proc_macro_hygiene    // when I fix the issue.
-//)]                       // -Az
+#![feature(
+   decl_macro,
+   proc_macro_hygiene
+)]
 
 lazy_static!{
    /// Root and /home routes.
@@ -24,7 +24,7 @@ lazy_static!{
    ];
 }
 
-#[tokio::main]
+#[tokio::main(flavor="multi_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
    // Load dotenv file.
    dotenv().ok();
@@ -109,6 +109,7 @@ use {
 
 mod controllers;
 mod models;
+mod service;
 
 extern crate dotenv;
 extern crate figment;
