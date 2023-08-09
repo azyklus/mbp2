@@ -1,8 +1,6 @@
+#![doc = include_str!("./readme.markdown")]
 #![allow(non_snake_case)]
-//#![feature(fs_try_exists)]
-// The above feature decl breaks compilation, and I have yet to determine why.
-// I will uncomment the decl when I fix the problem.
-// -Az
+#![feature(fs_try_exists)]
 
 /// NewConfig creates a default [`Settings`] instance.
 ///
@@ -16,6 +14,7 @@ pub mod api;
 
 #[macro_use]
 extern crate common_macros as macros;
+extern crate juniper;
 extern crate rocket;
 #[macro_use]
 extern crate serde;

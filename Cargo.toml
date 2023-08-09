@@ -17,6 +17,12 @@ lazy_static = "1.4.0"
 ulid = { version = "1.0.0", features = ["serde"] }
 common_macros = "0.1.1"
 
+[dependencies.juniper]
+git = "https://github.com/graphql-rust/juniper"
+branch = "master"
+version = "^0.16.0-dev"
+features = ["expose-test-schema", "bson"]
+
 [dependencies.rocket]
 git = "https://github.com/SergioBenitez/Rocket"
 branch = "master"

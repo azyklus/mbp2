@@ -72,6 +72,7 @@ pub fn DefaultClientConfig() -> ClientConfig {
 }
 
 pub use self::config::*;
+pub use self::juniper::*;
 
 use std::{
    io::{
@@ -86,3 +87,4 @@ use std::{
 
 mod blog;
 mod config;
+mod juniper;
