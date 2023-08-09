@@ -57,4 +57,5 @@ use rocket::route::{self, Handler, Outcome};
 use std::path::PathBuf;
 
 pub mod api;
+pub mod blog;
 pub mod home;

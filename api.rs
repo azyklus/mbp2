@@ -71,6 +71,7 @@ pub fn DefaultClientConfig() -> ClientConfig {
    };
 }
 
+pub use self::blog::*;
 pub use self::config::*;
 pub use self::juniper::*;
 

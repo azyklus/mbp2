@@ -14,6 +14,7 @@ pub mod api;
 
 #[macro_use]
 extern crate common_macros as macros;
+#[macro_use]
 extern crate juniper;
 extern crate rocket;
 #[macro_use]
