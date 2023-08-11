@@ -31,7 +31,16 @@ pub fn DefaultSettings() -> Settings {
       MaxSocketPayloadSize: 0,
       SocketHostOverride: None,
       Client: DefaultClientConfig(),
-      Db: DbSettings{ Addr: String::new(), State: String::new() },
+      Db: DbSettings{
+         Addr: String::new(),
+         State: String::new(),
+         WriteConcern: String::new(),
+         Username: String::new(),
+         Password: String::new(),
+         RetryReads: false,
+         RetryWrites: false,
+         LocalThreshold: 15,
+      },
       Auth0: Auth0Settings{
          Audience: String::new(),
          Domain: String::new(),

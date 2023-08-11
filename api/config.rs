@@ -86,6 +86,18 @@ pub struct DbSettings {
    pub Addr: String,
    #[serde(rename="state")]
    pub State: String,
+   #[serde(rename="w")]
+   pub WriteConcern: String,
+   #[serde(rename="username")]
+   pub Username: String,
+   #[serde(rename="password")]
+   pub Password: String,
+   #[serde(rename="retryReads")]
+   pub RetryReads: bool,
+   #[serde(rename="retryWrites")]
+   pub RetryWrites: bool,
+   #[serde(rename="localThreshold")]
+   pub LocalThreshold: usize,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

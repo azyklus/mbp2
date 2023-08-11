@@ -59,36 +59,41 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
    let apiGraphqlPost: Route = (&API_ROUTES).get(4).unwrap().clone();
    let apiGraphqlPlayground: Route = (&API_ROUTES).get(5).unwrap().clone();
 
-   // Set up our Rocket runtime.
-   let rt = rocket::custom(fig)
-      .attach(AdHoc::config::<Config>())
-      .attach(Template::try_custom(|e| {
-         let _ = models::Customise(&mut e.handlebars).unwrap();
+   let h1: JoinHandle<_> = tokio::spawn(async move {
+         // Set up our Rocket runtime.
+      let rt = rocket::custom(fig)
+         .attach(AdHoc::config::<Config>())
+         .attach(Template::try_custom(|e| {
+            let _ = models::Customise(&mut e.handlebars).unwrap();
+            Ok(())
+         }))
+         .manage(Database::new())
+         .manage(GraphqlSchema::new(
+            Query,
+            EmptyMutation::<Database>::new(),
+            EmptySubscription::<Database>::new(),
+         ))
+         //.mount("/", vec![index])
+         .mount("/", FileServer::from(workDir))
+         .mount("/api", vec![
+            apiConfig,
+            apiRocket,
+            apiGraphql,
+            apiGraphqlGet,
+            apiGraphqlPost,
+            apiGraphqlPlayground
+         ])
+         .mount("/home", vec![home]);
+         //.register("/", vec![nfc]);
 
-         Ok(())
-      }))
-      .manage(Database::new())
-      .manage(api::GraphqlSchema::new(
-         Query,
-         EmptyMutation::<Database>::new(),
-         EmptySubscription::<Database>::new(),
-      ))
-      //.mount("/", vec![index])
-      .mount("/", FileServer::from(workDir))
-      .mount("/api", vec![
-         apiConfig,
-         apiRocket,
-         apiGraphql,
-         apiGraphqlGet,
-         apiGraphqlPost,
-         apiGraphqlPlayground
-      ])
-      .mount("/home", vec![home]);
-      //.register("/", vec![nfc]);
+      // Check state and launch Rocket.
+      assert!(rt.state::<String>().is_none());
+      rt.launch().await
+   });
 
-   // Check state and launch Rocket.
-   assert!(rt.state::<String>().is_none());
-   if let Err(e) = rt.launch().await {
+   let h2: JoinHandle<_> = tokio::spawn(async move {});
+
+   if let Err(e) = tokio::try_join!(h1, h2) {
       return Err(e.into());
    }
 
@@ -97,6 +102,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 use {
    self::controllers::*,
+   self::controllers::api::GraphqlSchema,
    dotenv::dotenv,
    figment::{
       Figment,
@@ -125,6 +131,7 @@ use {
       Route,
    },
    tmpl::Template,
+   tokio::task::JoinHandle,
 };
 
 mod controllers;
