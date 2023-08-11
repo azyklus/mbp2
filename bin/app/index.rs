@@ -59,20 +59,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
    let apiGraphqlPost: Route = (&API_ROUTES).get(4).unwrap().clone();
    let apiGraphqlPlayground: Route = (&API_ROUTES).get(5).unwrap().clone();
 
+   let dbClient: Client = DbConnCreate(cfg.Db).await.expect("db connection failed");
+
+   // Set up our Rocket runtime in a separate Tokio thread.
    let h1: JoinHandle<_> = tokio::spawn(async move {
-         // Set up our Rocket runtime.
       let rt = rocket::custom(fig)
          .attach(AdHoc::config::<Config>())
          .attach(Template::try_custom(|e| {
             let _ = models::Customise(&mut e.handlebars).unwrap();
             Ok(())
          }))
-         .manage(Database::new())
-         .manage(GraphqlSchema::new(
-            Query,
-            EmptyMutation::<Database>::new(),
-            EmptySubscription::<Database>::new(),
-         ))
+         .manage(dbClient.database("admin").clone())
+         .manage(GraphqlSchema::new(QueryRoot, MutationRoot, EmptySubscription::<DbContext>::new()))
          //.mount("/", vec![index])
          .mount("/", FileServer::from(workDir))
          .mount("/api", vec![
@@ -101,8 +99,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 use {
-   self::controllers::*,
-   self::controllers::api::GraphqlSchema,
+   self::{
+      controllers::{*, api::GraphqlSchema},
+      service::{
+         DbConnCreate,
+         QueryRoot, MutationRoot,
+         DbContext
+      },
+   },
    dotenv::dotenv,
    figment::{
       Figment,
@@ -115,7 +119,6 @@ use {
       }
    },
    juniper::{
-      tests::fixtures::starwars::schema::{Database, Query},
       EmptyMutation, EmptySubscription
    },
    mbp2::api::{
@@ -123,6 +126,7 @@ use {
       DefaultSettings,
       Settings
    },
+   mongodb::sync::Client,
    rocket::{
       fairing::AdHoc,
       fs::FileServer,
@@ -142,6 +146,7 @@ extern crate bson;
 extern crate chrono;
 extern crate dotenv;
 extern crate figment;
+#[macro_use]
 extern crate juniper;
 extern crate juniper_rocket;
 #[macro_use]

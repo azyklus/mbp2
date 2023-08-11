@@ -1,4 +1,4 @@
-pub type GraphqlSchema = RootNode<'static, Query, EmptyMutation<Database>, EmptySubscription<Database>>;
+pub type GraphqlSchema = RootNode<'static, QueryRoot, MutationRoot, EmptySubscription<DbContext>>;
 
 #[rocket::get("/rocket_config")]
 pub fn ReadRocketConfig(rocket: &Config, app: &State<Config>) -> String {
@@ -22,7 +22,7 @@ pub fn GraphqlPlayground() -> content::RawHtml<String> {
 
 #[rocket::get("/graphql?<request>")]
 pub fn GetGraphqlHandler(
-    context: &State<Database>,
+    context: &State<DbContext>,
     request: api::GraphQLRequest,
     schema: &State<GraphqlSchema>,
 ) -> api::GraphQLResponse {
@@ -31,7 +31,7 @@ pub fn GetGraphqlHandler(
 
 #[rocket::post("/graphql", data = "<request>")]
 pub fn PostGraphqlHandler(
-    context: &State<Database>,
+    context: &State<DbContext>,
     request: api::GraphQLRequest,
     schema: &State<GraphqlSchema>,
 ) -> api::GraphQLResponse {
@@ -41,11 +41,9 @@ pub fn PostGraphqlHandler(
 #[doc(hidden)]
 pub fn ReadAppConfig() {}
 
-use juniper::{
-    tests::fixtures::starwars::schema::{Database, Query},
-    EmptyMutation, EmptySubscription, RootNode,
+use {
+   crate::{MutationRoot, QueryRoot, service::DbContext},
+   juniper::{EmptySubscription, RootNode},
+   mbp2::api,
+   rocket::{response::content, Config, State}
 };
-
-use mbp2::api;
-
-use rocket::{response::content, Config, State};
