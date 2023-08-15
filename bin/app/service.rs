@@ -14,21 +14,24 @@ pub async fn DbConnCreate(config: DbSettings) -> FieldResult<Client> {
    // Ping the database to ensure a connection.
    client.database("admin")
       .run_command(doc!{ "ping": 1 }, None)
-      .unwrap();
+      .await.unwrap();
 
    return Ok(client);
 }
 
+pub type GraphQLSchema = Schema<QueryRoot, MutationRoot, EmptySubscription>;
+
 pub struct QueryRoot;
 
-#[graphql_object(context=DbContext)]
+#[Object]
 impl QueryRoot {
-   pub fn authors(
-      #[graphql(context)] ctx: &DbContext,
+   pub async fn authors<'ctx>(
+      &self,
+      ctx: &Context<'ctx>,
    ) -> Vec<BlogAuthor> {
-      let database = &ctx.Db.clone();
+      let database = ctx.data::<Database>().unwrap();
       let collection = database.collection("authors");
-      let cursor = collection.find(None, None).unwrap();
+      let cursor = collection.find(None, None).await.unwrap();
 
       let mut authors: Vec<BlogAuthor> = vec![];
       for result in cursor {
@@ -38,12 +41,13 @@ impl QueryRoot {
       return authors;
    }
 
-   pub fn posts(
-      #[graphql(context)] ctx: &DbContext,
+   pub async fn posts<'ctx>(
+      &self,
+      ctx: &Context<'ctx>,
    ) -> Vec<BlogEntry> {
-      let database = &ctx.Db.clone();
+      let database = ctx.data::<Database>().expect("database data not present");
       let collection = database.collection("entries");
-      let cursor = collection.find(None, None).unwrap();
+      let cursor = collection.find(None, None).await.unwrap();
 
       let mut posts: Vec<BlogEntry> = vec![];
       for result in cursor {
@@ -56,13 +60,14 @@ impl QueryRoot {
 
 pub struct MutationRoot;
 
-#[graphql_object(context=DbContext)]
+#[Object]
 impl MutationRoot {
-   pub fn createEntry(
-      #[graphql(context)] ctx: &DbContext,
+   pub async fn createEntry<'ctx>(
+      &self,
+      ctx: &Context<'ctx>,
       newEntry: NewBlogEntry
    ) -> BlogEntry {
-      let database: &Database = &ctx.Db.clone();
+      let database: &Database = ctx.data::<Database>().expect("database data not present");
       let collection: Collection<BlogEntry> = database.collection("entries");
 
       let mut newHeaders: Vec<EntryHeader> = vec![];
@@ -86,12 +91,12 @@ impl MutationRoot {
          Meta: EntryMetadata {
             Author: BlogAuthor {
                Name: newEntry.meta.Author.Name,
-               Identifier: Ulid::from_string(newEntry.meta.Author.Identifier.as_str()).expect("invalid ULID construction"),
+               Identifier: Ulid::from_string(newEntry.meta.Author.Identifier.as_str()).expect("invalid ULID construction").to_string(),
             },
             Title: newEntry.meta.Title,
             Subtitle: newEntry.meta.Subtitle,
             Keywords: newEntry.meta.Keywords,
-            Identifier: Ulid::new(),
+            Identifier: Ulid::new().to_string(),
          },
          Body: EntryBody {
             Headers: newHeaders,
@@ -99,18 +104,19 @@ impl MutationRoot {
          },
       };
 
-      collection.insert_one(&be, None).expect("could not insert new entry");
+      collection.insert_one(&be, None).await.expect("could not insert new entry");
       return be;
    }
 }
 
+/*
 #[derive(Clone)]
 pub struct DbContext {
    pub Db: Database
 }
 
 impl Context for DbContext {}
-/*
+
 impl FromContext<DbContext> for Database {
    fn from(ctx: &DbContext) -> &Self {
       let ctx = ctx.clone();
@@ -118,12 +124,13 @@ impl FromContext<DbContext> for Database {
    }
 }
 */
+
 use {
    bson::doc,
-   juniper::{Context, FromContext, FieldResult},
+   async_graphql::{Context, FieldResult, EmptySubscription, Schema},
    mbp2::api::*,
    mongodb::{
-      sync::{Client, Database, Collection},
+      Client, Database, Collection,
       options::{ClientOptions, ServerApi, ServerApiVersion},
    },
    std::env,

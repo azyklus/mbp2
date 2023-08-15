@@ -1,5 +1,3 @@
-pub type GraphqlSchema = RootNode<'static, QueryRoot, MutationRoot, EmptySubscription<DbContext>>;
-
 #[rocket::get("/rocket_config")]
 pub fn ReadRocketConfig(rocket: &Config, app: &State<Config>) -> String {
    return format!("{:#?}\n{:#?}", app, rocket);
@@ -11,39 +9,46 @@ pub fn Rocket() -> String {
 }
 
 #[rocket::get("/graphql")]
-pub fn GraphiQL() -> content::RawHtml<String> {
-   api::GraphiqlSource("/api/graphql", None)
+pub fn GraphiQL() -> RawHtml<String> {
+   return RawHtml(
+      GraphiQLSource::build()
+         .endpoint("/api/graphiql")
+         .finish()
+   );
 }
 
 #[rocket::get("/graphql/playground")]
-pub fn GraphqlPlayground() -> content::RawHtml<String> {
-   api::PlaygroundSource("/api/graphql/playground", None)
+pub fn GraphqlPlayground() -> RawHtml<String> {
+   let config = GraphQLPlaygroundConfig::new("/api/graphql/playground");
+   return RawHtml(playground_source(config));
 }
 
-#[rocket::get("/graphql?<request>")]
-pub fn GetGraphqlHandler(
-    context: &State<DbContext>,
-    request: api::GraphQLRequest,
-    schema: &State<GraphqlSchema>,
-) -> api::GraphQLResponse {
-    request.ExecuteSync(&*schema, &*context)
+#[rocket::get("/graphql?<query..>")]
+pub async fn GetGraphqlHandler(query: GraphQLQuery, schema: &State<GraphQLSchema>) -> GraphQLResponse {
+   query.Execute(schema.inner()).await
 }
 
-#[rocket::post("/graphql", data = "<request>")]
-pub fn PostGraphqlHandler(
-    context: &State<DbContext>,
-    request: api::GraphQLRequest,
-    schema: &State<GraphqlSchema>,
-) -> api::GraphQLResponse {
-    request.ExecuteSync(&*schema, &*context)
+#[rocket::post("/graphql", data="<request>", format="application/json", rank=1)]
+pub async fn PostGraphqlHandler(request: GraphQLRequest, schema: &State<GraphQLSchema>) -> GraphQLResponse {
+   request.Execute(schema.inner()).await
+}
+
+#[rocket::post("/graphql", data="<request>", format="multipart/form-data", rank=2)]
+pub async fn PostGraphqlHandlerMultipart(request: GraphQLRequest, schema: &State<GraphQLSchema>) -> GraphQLResponse {
+   request.Execute(schema.inner()).await
 }
 
 #[doc(hidden)]
 pub fn ReadAppConfig() {}
 
 use {
-   crate::{MutationRoot, QueryRoot, service::DbContext},
-   juniper::{EmptySubscription, RootNode},
-   mbp2::api,
-   rocket::{response::content, Config, State}
+   crate::service::GraphQLSchema,
+   async_graphql::http::{
+      GraphiQLSource, GraphQLPlaygroundConfig,
+      playground_source,
+   },
+   mbp2::api::{
+      GraphQLRequest, GraphQLResponse, GraphQLQuery
+   },
+   rocket::{response::content::RawHtml, Config, State}
 };

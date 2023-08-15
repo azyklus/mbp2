@@ -10,18 +10,23 @@ name = "mbp2"
 path = "index.rs"
 
 [dependencies]
+common_macros = "0.1.1"
+lazy_static = "1.4.0"
 serde = { version = "1.0.183", features = ["derive"] }
 serde_json = "1.0.104"
 serde_derive = "1.0.183"
-lazy_static = "1.4.0"
+tokio-util = { version = "*", default-features = false, features = ["compat"] }
 ulid = { version = "1.0.0", features = ["serde"] }
-common_macros = "0.1.1"
 
-[dependencies.juniper]
-git = "https://github.com/graphql-rust/juniper"
+[dependencies.async-graphql]
+git = "https://github.com/async-graphql/async-graphql"
 branch = "master"
-version = "^0.16.0-dev"
-features = ["expose-test-schema", "bson"]
+version = "^6.0"
+features = [
+   "apollo_tracing", "apollo_persisted_queries",
+   "bson", "dynamic-schema", "graphiql", "log",
+   "playground", "opentelemetry", "tracing"
+]
 
 [dependencies.rocket]
 git = "https://github.com/SergioBenitez/Rocket"

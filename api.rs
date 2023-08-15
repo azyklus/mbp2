@@ -82,7 +82,7 @@ pub fn DefaultClientConfig() -> ClientConfig {
 
 pub use self::blog::*;
 pub use self::config::*;
-pub use self::juniper::*;
+pub use self::graphql::*;
 
 use std::{
    io::{
@@ -97,4 +97,4 @@ use std::{
 
 mod blog;
 mod config;
-mod juniper;
+mod graphql;

@@ -19,6 +19,7 @@ lazy_static!{
       api::GraphiQL,
       api::GetGraphqlHandler,
       api::PostGraphqlHandler,
+      api::PostGraphqlHandlerMultipart,
       api::GraphqlPlayground,
    ];
 }
@@ -57,9 +58,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
    let apiGraphql: Route = (&API_ROUTES).get(2).unwrap().clone();
    let apiGraphqlGet: Route = (&API_ROUTES).get(3).unwrap().clone();
    let apiGraphqlPost: Route = (&API_ROUTES).get(4).unwrap().clone();
-   let apiGraphqlPlayground: Route = (&API_ROUTES).get(5).unwrap().clone();
+   let apiGraphqlPostMultipart: Route = (&API_ROUTES).get(5).unwrap().clone();
+   let apiGraphqlPlayground: Route = (&API_ROUTES).get(6).unwrap().clone();
 
    let dbClient: Client = DbConnCreate(cfg.Db).await.expect("db connection failed");
+   let graphqlSchema: GraphQLSchema = GraphQLSchema::build(QueryRoot, MutationRoot, EmptySubscription)
+      .data(dbClient.database("admin").clone())
+      .finish();
 
    // Set up our Rocket runtime in a separate Tokio thread.
    let h1: JoinHandle<_> = tokio::spawn(async move {
@@ -70,7 +75,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Ok(())
          }))
          .manage(dbClient.database("admin").clone())
-         .manage(GraphqlSchema::new(QueryRoot, MutationRoot, EmptySubscription::<DbContext>::new()))
+         .manage(graphqlSchema)
          //.mount("/", vec![index])
          .mount("/", FileServer::from(workDir))
          .mount("/api", vec![
@@ -79,6 +84,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             apiGraphql,
             apiGraphqlGet,
             apiGraphqlPost,
+            apiGraphqlPostMultipart,
             apiGraphqlPlayground
          ])
          .mount("/home", vec![home]);
@@ -100,13 +106,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 use {
    self::{
-      controllers::{*, api::GraphqlSchema},
+      controllers::*,
       service::{
          DbConnCreate,
          QueryRoot, MutationRoot,
-         DbContext
+         GraphQLSchema,
       },
    },
+   async_graphql::{Schema, EmptySubscription},
    dotenv::dotenv,
    figment::{
       Figment,
@@ -118,15 +125,12 @@ use {
          Toml,
       }
    },
-   juniper::{
-      EmptyMutation, EmptySubscription
-   },
    mbp2::api::{
       ApplySettings,
       DefaultSettings,
       Settings
    },
-   mongodb::sync::Client,
+   mongodb::Client,
    rocket::{
       fairing::AdHoc,
       fs::FileServer,
@@ -142,13 +146,12 @@ mod controllers;
 mod models;
 mod service;
 
+#[macro_use]
+extern crate async_graphql;
 extern crate bson;
 extern crate chrono;
 extern crate dotenv;
 extern crate figment;
-#[macro_use]
-extern crate juniper;
-extern crate juniper_rocket;
 #[macro_use]
 extern crate lazy_static;
 extern crate mbp2;

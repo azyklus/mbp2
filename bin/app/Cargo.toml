@@ -42,16 +42,15 @@ branch = "master"
 version = "^0.1.0-rc.2"
 features = [ "handlebars" ]
 
-[dependencies.juniper]
-git = "https://github.com/graphql-rust/juniper"
+[dependencies.async-graphql]
+git = "https://github.com/async-graphql/async-graphql"
 branch = "master"
-version = "^0.16.0-dev"
-features = ["expose-test-schema", "bson"]
-
-[dependencies.juniper_rocket]
-git = "https://github.com/graphql-rust/juniper"
-branch = "master"
-version = "^0.9.0-dev"
+version = "^6.0"
+features = [
+   "apollo_tracing", "apollo_persisted_queries",
+   "bson", "dynamic-schema", "graphiql", "log",
+   "playground", "opentelemetry", "tracing"
+]
 
 [build-dependencies]
 fs_extra = "1.3.0"
