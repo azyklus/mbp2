@@ -1,6 +1,5 @@
 #![doc = include_str!("./readme.markdown")]
 #![allow(non_snake_case)]
-#![feature(fs_try_exists)]
 
 /// NewConfig creates a default [`Settings`] instance.
 ///

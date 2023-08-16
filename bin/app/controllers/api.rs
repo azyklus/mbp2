@@ -12,7 +12,7 @@ pub fn Rocket() -> String {
 pub fn GraphiQL() -> RawHtml<String> {
    return RawHtml(
       GraphiQLSource::build()
-         .endpoint("/api/graphiql")
+         .endpoint("/api/graphql")
          .finish()
    );
 }

@@ -1,20 +1,15 @@
 /// DbConnCreate opens a connection to a MongoDB server with the client options specified
 /// in the `config.json`.
 pub async fn DbConnCreate(config: DbSettings) -> FieldResult<Client> {
-   let mut clientOptions = ClientOptions::parse(format!("mongodb+srv://{}:{}@cluster0.jlm4ztq.mongodb.net/?retryWrites={}&retryReads={}&localThresholdMS={}&w={}",
+   let mut clientOptions = ClientOptions::parse_async(format!("mongodb+srv://{}:{}@cluster0.jlm4ztq.mongodb.net/?retryWrites={}&retryReads={}&localThresholdMS={}&w={}",
       config.Username, config.Password, config.RetryWrites, config.RetryReads, config.LocalThreshold, config.WriteConcern))
-      .expect("failure to parse client options");
+      .await.expect("failure to parse client options");
 
    let serverApi = ServerApi::builder().version(ServerApiVersion::V1).build();
    clientOptions.server_api = Some(serverApi);
 
    let dbUrl: String = env::var("MONGODB_URL").expect("url must be set");
    let client: Client = Client::with_options(clientOptions).expect("failed to build client");
-
-   // Ping the database to ensure a connection.
-   client.database("admin")
-      .run_command(doc!{ "ping": 1 }, None)
-      .await.unwrap();
 
    return Ok(client);
 }
@@ -25,36 +20,30 @@ pub struct QueryRoot;
 
 #[Object]
 impl QueryRoot {
-   pub async fn authors<'ctx>(
-      &self,
-      ctx: &Context<'ctx>,
-   ) -> Vec<BlogAuthor> {
+   pub async fn authors(&self, ctx: &Context<'_>) -> Vec<BlogAuthor> {
       let database = ctx.data::<Database>().unwrap();
       let collection = database.collection("authors");
-      let cursor = collection.find(None, None).await.unwrap();
+      let mut cursor: Cursor<_> = collection.find(None, None).await.unwrap();
 
       let mut authors: Vec<BlogAuthor> = vec![];
-      for result in cursor {
-         authors.push(result.unwrap());
+      while let Some(author) = cursor.try_next().await.unwrap() {
+         authors.push(author);
       }
 
-      return authors;
+      authors
    }
 
-   pub async fn posts<'ctx>(
-      &self,
-      ctx: &Context<'ctx>,
-   ) -> Vec<BlogEntry> {
+   pub async fn posts(&self, ctx: &Context<'_>) -> Vec<BlogEntry> {
       let database = ctx.data::<Database>().expect("database data not present");
       let collection = database.collection("entries");
-      let cursor = collection.find(None, None).await.unwrap();
+      let mut cursor: Cursor<_> = collection.find(None, None).await.unwrap();
 
       let mut posts: Vec<BlogEntry> = vec![];
-      for result in cursor {
-         posts.push(result.unwrap());
+      while let Some(post) = cursor.try_next().await.unwrap() {
+         posts.push(post);
       }
 
-      return posts;
+      posts
    }
 }
 
@@ -62,9 +51,10 @@ pub struct MutationRoot;
 
 #[Object]
 impl MutationRoot {
-   pub async fn createEntry<'ctx>(
+   pub async fn createEntry(
       &self,
-      ctx: &Context<'ctx>,
+      ctx: &Context<'_>,
+      #[graphql(desc="The new entry to be created.")]
       newEntry: NewBlogEntry
    ) -> BlogEntry {
       let database: &Database = ctx.data::<Database>().expect("database data not present");
@@ -87,11 +77,13 @@ impl MutationRoot {
          });
       }
 
-      let be = BlogEntry{
+      let blogEntry = BlogEntry{
          Meta: EntryMetadata {
             Author: BlogAuthor {
                Name: newEntry.meta.Author.Name,
-               Identifier: Ulid::from_string(newEntry.meta.Author.Identifier.as_str()).expect("invalid ULID construction").to_string(),
+               Identifier: Ulid::from_string(
+                  newEntry.meta.Author.Identifier.as_str()
+               ).expect("invalid ULID construction").to_string(),
             },
             Title: newEntry.meta.Title,
             Subtitle: newEntry.meta.Subtitle,
@@ -104,8 +96,8 @@ impl MutationRoot {
          },
       };
 
-      collection.insert_one(&be, None).await.expect("could not insert new entry");
-      return be;
+      collection.insert_one(&blogEntry, None).await.expect("could not insert new entry");
+      blogEntry
    }
 }
 
@@ -128,9 +120,10 @@ impl FromContext<DbContext> for Database {
 use {
    bson::doc,
    async_graphql::{Context, FieldResult, EmptySubscription, Schema},
+   futures::TryStreamExt,
    mbp2::api::*,
    mongodb::{
-      Client, Database, Collection,
+      Client, Database, Collection, Cursor,
       options::{ClientOptions, ServerApi, ServerApiVersion},
    },
    std::env,

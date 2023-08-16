@@ -1,10 +1,6 @@
 #![doc = include_str!("../../readme.markdown")]
 #![warn(missing_docs)]
 #![allow(non_snake_case)]
-#![feature(
-   decl_macro,
-   proc_macro_hygiene
-)]
 
 lazy_static!{
    /// Root and /home routes.
@@ -62,42 +58,42 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
    let apiGraphqlPlayground: Route = (&API_ROUTES).get(6).unwrap().clone();
 
    let dbClient: Client = DbConnCreate(cfg.Db).await.expect("db connection failed");
+   // Ping the database to ensure a connection.
+   if let Ok(_) = dbClient.database("otherskies")
+      .run_command(doc!{ "ping": 1 }, None)
+      .await {
+      println!("Database connection success");
+   }
+
    let graphqlSchema: GraphQLSchema = GraphQLSchema::build(QueryRoot, MutationRoot, EmptySubscription)
       .data(dbClient.database("admin").clone())
       .finish();
 
-   // Set up our Rocket runtime in a separate Tokio thread.
-   let h1: JoinHandle<_> = tokio::spawn(async move {
-      let rt = rocket::custom(fig)
-         .attach(AdHoc::config::<Config>())
-         .attach(Template::try_custom(|e| {
-            let _ = models::Customise(&mut e.handlebars).unwrap();
-            Ok(())
-         }))
-         .manage(dbClient.database("admin").clone())
-         .manage(graphqlSchema)
-         //.mount("/", vec![index])
-         .mount("/", FileServer::from(workDir))
-         .mount("/api", vec![
-            apiConfig,
-            apiRocket,
-            apiGraphql,
-            apiGraphqlGet,
-            apiGraphqlPost,
-            apiGraphqlPostMultipart,
-            apiGraphqlPlayground
-         ])
-         .mount("/home", vec![home]);
-         //.register("/", vec![nfc]);
+   let rt = rocket::custom(fig)
+      .attach(AdHoc::config::<Config>())
+      .attach(Template::try_custom(|e| {
+         let _ = models::Customise(&mut e.handlebars).unwrap();
+         Ok(())
+      }))
+      .manage(dbClient.database("admin").clone())
+      .manage(graphqlSchema)
+      //.mount("/", vec![index])
+      .mount("/", FileServer::from(workDir))
+      .mount("/api", vec![
+         apiConfig,
+         apiRocket,
+         apiGraphql,
+         apiGraphqlGet,
+         apiGraphqlPost,
+         apiGraphqlPostMultipart,
+         apiGraphqlPlayground
+      ])
+      .mount("/home", vec![home]);
+      //.register("/", vec![nfc]);
 
-      // Check state and launch Rocket.
-      assert!(rt.state::<String>().is_none());
-      rt.launch().await
-   });
-
-   let h2: JoinHandle<_> = tokio::spawn(async move {});
-
-   if let Err(e) = tokio::try_join!(h1, h2) {
+   // Check state and launch Rocket.
+   assert!(rt.state::<String>().is_none());
+   if let Err(e) = rt.launch().await {
       return Err(e.into());
    }
 
@@ -114,6 +110,7 @@ use {
       },
    },
    async_graphql::{Schema, EmptySubscription},
+   bson::doc,
    dotenv::dotenv,
    figment::{
       Figment,
@@ -139,7 +136,6 @@ use {
       Route,
    },
    tmpl::Template,
-   tokio::task::JoinHandle,
 };
 
 mod controllers;
