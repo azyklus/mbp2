@@ -1,14 +1,16 @@
-pub struct LaunchModal{}
+pub struct LaunchModal {}
 
 impl Component for LaunchModal {
    type Message = Msg;
    type Properties = ();
 
    fn create(_: &Context<Self>) -> LaunchModal {
-      return LaunchModal{};
+      return LaunchModal {};
    }
 
-   fn update(&mut self, _: &Context<Self>, _: Self::Message) -> bool { true }
+   fn update(&mut self, _: &Context<Self>, _: Self::Message) -> bool {
+      true
+   }
 
    fn view(&self, _: &Context<Self>) -> Html {
       let classes: Classes = classes!("jumbotron", "text-center");

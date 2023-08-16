@@ -1,6 +1,6 @@
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PageContent {
-   #[serde(rename="data")]
+   #[serde(rename = "data")]
    pub Data: String,
 }
 
@@ -36,7 +36,7 @@ impl Markup {
 
             html::push_html(&mut htmlOut, parser);
             htmlOut
-         },
+         }
          _ => "Failed to load...".to_string(),
       };
    }
@@ -47,7 +47,7 @@ impl Component for Markup {
    type Properties = MarkupProps;
 
    fn create(_: &Context<Self>) -> Self {
-      return Self{
+      return Self {
          Inner: FetchState::NotFetching,
       };
    }
@@ -64,26 +64,22 @@ impl Component for Markup {
          FetchStateMsg::SetDataFetchState(state) => {
             self.Inner = state;
             true
-         },
+         }
          FetchStateMsg::GetData => {
             ctx.link().send_future(async move {
                match Request::get(uri.as_str()).send().await {
                   Ok(m) => match m.json().await {
                      Ok(m) => FetchStateMsg::SetDataFetchState(FetchState::Success(m)),
-                     Err(e) => FetchStateMsg::SetDataFetchState(FetchState::Failed(FetchError {
-                        Err: e.to_string(),
-                     }))
+                     Err(e) => FetchStateMsg::SetDataFetchState(FetchState::Failed(FetchError { Err: e.to_string() })),
                   },
-                  Err(e) => FetchStateMsg::SetDataFetchState(FetchState::Failed(FetchError {
-                     Err: e.to_string(),
-                  })),
+                  Err(e) => FetchStateMsg::SetDataFetchState(FetchState::Failed(FetchError { Err: e.to_string() })),
                }
             });
 
             ctx.link().send_message(FetchStateMsg::SetDataFetchState(FetchState::Fetching));
 
             false
-         },
+         }
       };
    }
 
@@ -92,12 +88,7 @@ impl Component for Markup {
          ctx.link().send_message(FetchStateMsg::GetData);
       }
 
-      let div = web::window()
-         .unwrap()
-         .document()
-         .unwrap()
-         .create_element("div")
-         .unwrap();
+      let div = web::window().unwrap().document().unwrap().create_element("div").unwrap();
 
       div.set_inner_html(&self.renderMarkup());
       let node: Node = Node::from(div);
@@ -110,9 +101,6 @@ use {
    crate::utils::*,
    cmark::{html, Options, Parser},
    reqwasm::http::Request,
-   yew::{
-      prelude::*,
-      virtual_dom::VNode,
-   },
    web::Node,
+   yew::{prelude::*, virtual_dom::VNode},
 };

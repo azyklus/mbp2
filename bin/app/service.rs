@@ -1,21 +1,38 @@
 /// DbConnCreate opens a connection to a MongoDB server with the client options specified
 /// in the `config.json`.
 pub async fn DbConnCreate(config: DbSettings) -> FieldResult<Client> {
-   let mut clientOptions = ClientOptions::parse_async(format!("mongodb+srv://{}:{}@cluster0.jlm4ztq.mongodb.net/?retryWrites={}&retryReads={}&localThresholdMS={}&w={}",
-      config.Username, config.Password, config.RetryWrites, config.RetryReads, config.LocalThreshold, config.WriteConcern))
-      .await.expect("failure to parse client options");
+   let mut clientOptions = ClientOptions::parse_async(format!(
+      "mongodb+srv://{}:{}@cluster0.jlm4ztq.mongodb.net/?retryWrites={}&retryReads={}&localThresholdMS={}&w={}",
+      config.Username, config.Password, config.RetryWrites, config.RetryReads, config.LocalThreshold, config.WriteConcern
+   ))
+   .await
+   .expect("failure to parse client options");
 
    let serverApi = ServerApi::builder().version(ServerApiVersion::V1).build();
    clientOptions.server_api = Some(serverApi);
 
-   let dbUrl: String = env::var("MONGODB_URL").expect("url must be set");
    let client: Client = Client::with_options(clientOptions).expect("failed to build client");
-
    return Ok(client);
 }
 
+/// GraphQLSchema is the schema for our GQL/Mongo setup.
+///
+/// - [`QueryRoot`] holds our queries;
+/// - [`MutationRoot`] handles our mutations;
+/// - and [`EmptySubscription`], since we have no subscriptions.
+///
+/// [`QueryRoot`]: crate::service::QueryRoot
+/// [`MutationRoot`]: crate::service::MutationRoot
+/// [`EmptySubscription`]: async_graphql::EmptySubscription
 pub type GraphQLSchema = Schema<QueryRoot, MutationRoot, EmptySubscription>;
 
+/// QueryRoot contains our GQL queries.
+///
+/// - [`authors`] is our query returning a [`Vec<BlogAuthor>`] containing our authors.
+/// - [`posts`] is our query returning a [`Vec<BlogEntry>`] containing our entries.
+///
+/// [`authors`]: crate::service::QueryRoot::authors
+/// [`posts`]: crate::service::QueryRoot::posts
 pub struct QueryRoot;
 
 #[Object]
@@ -47,16 +64,23 @@ impl QueryRoot {
    }
 }
 
+/// MutationRoot contains our GQL mutations.
+///
+/// - [`createEntry`] is our mutation for creating a new blog entry in our database collections.
+/// - [`removeEntry`] is for deleting entries from the database.
+/// - [`addAuthor`] pushes a new [`BlogAuthor`] into our authors collection.
+///
+/// [`createEntry`]: crate::service::MutationRoot::createEntry
+/// [`removeEntry`]: crate::service::MutationRoot::removeEntry
+/// [`addAuthor`]: crate::service::MutationRoot::addAuthor
+/// [`BlogAuthor`]: mbp2::api::BlogAuthor
 pub struct MutationRoot;
 
 #[Object]
 impl MutationRoot {
-   pub async fn createEntry(
-      &self,
-      ctx: &Context<'_>,
-      #[graphql(desc="The new entry to be created.")]
-      newEntry: NewBlogEntry
-   ) -> BlogEntry {
+   /// Create a blog entry in our MongoDB collection ("otherskies.entries").
+   /// Takes a `&Context` receiver and a parameter for the new blog entry.
+   pub async fn createEntry(&self, ctx: &Context<'_>, #[graphql(desc = "The new entry to be created.")] newEntry: NewBlogEntry) -> BlogEntry {
       let database: &Database = ctx.data::<Database>().expect("database data not present");
       let collection: Collection<BlogEntry> = database.collection("entries");
 
@@ -64,7 +88,7 @@ impl MutationRoot {
       for header in newEntry.body.Headers.as_slice() {
          newHeaders.push(EntryHeader {
             Chapter: header.Chapter,
-            Tagline: header.Tagline.clone()
+            Tagline: header.Tagline.clone(),
          });
       }
 
@@ -73,24 +97,24 @@ impl MutationRoot {
          newParts.push(EntrySection {
             Title: part.Title.clone(),
             ImageUrl: part.ImageUrl.clone(),
-            Paragraphs: part.Paragraphs.clone()
+            Paragraphs: part.Paragraphs.clone(),
          });
       }
 
       let blogEntry = BlogEntry{
-         Meta: EntryMetadata {
-            Author: BlogAuthor {
+         Meta: EntryMetadata{
+            Author: BlogAuthor{
                Name: newEntry.meta.Author.Name,
-               Identifier: Ulid::from_string(
-                  newEntry.meta.Author.Identifier.as_str()
-               ).expect("invalid ULID construction").to_string(),
+               Identifier: Ulid::from_string(newEntry.meta.Author.Identifier.as_str())
+                  .expect("invalid ULID construction")
+                  .to_string(),
             },
             Title: newEntry.meta.Title,
             Subtitle: newEntry.meta.Subtitle,
             Keywords: newEntry.meta.Keywords,
             Identifier: Ulid::new().to_string(),
          },
-         Body: EntryBody {
+         Body: EntryBody{
             Headers: newHeaders,
             Parts: newParts,
          },
@@ -98,6 +122,28 @@ impl MutationRoot {
 
       collection.insert_one(&blogEntry, None).await.expect("could not insert new entry");
       blogEntry
+   }
+
+   /// Add an author to our MongoDB collection ("otherskies.authors").
+   /// Takes a `&Context` receiver and a parameter for the new author.
+   pub async fn addAuthor(
+      &self,
+      ctx: &Context<'_>,
+      #[graphql(desc="The author to add to the collection.")]
+      newAuthor: NewBlogAuthor,
+   ) -> BlogAuthor {
+      let database: &Database = ctx.data::<Database>().expect("failed to fetch database");
+      let collection: Collection<BlogAuthor> = database.collection("authors");
+
+      let blogAuthor: BlogAuthor = BlogAuthor{
+         Name: newAuthor.Name.clone(),
+         Identifier: Ulid::from_string(newAuthor.Identifier.as_str())
+            .expect("invalid ULID construction")
+            .to_string(),
+      };
+
+      collection.insert_one(&blogAuthor, None).await.expect("could not insert new author");
+      blogAuthor
    }
 }
 
@@ -118,14 +164,13 @@ impl FromContext<DbContext> for Database {
 */
 
 use {
+   async_graphql::{Context, EmptySubscription, FieldResult, Schema},
    bson::doc,
-   async_graphql::{Context, FieldResult, EmptySubscription, Schema},
    futures::TryStreamExt,
    mbp2::api::*,
    mongodb::{
-      Client, Database, Collection, Cursor,
       options::{ClientOptions, ServerApi, ServerApiVersion},
+      Client, Collection, Cursor, Database,
    },
-   std::env,
    ulid::Ulid,
 };

@@ -12,9 +12,7 @@ impl Component for Navbar {
    type Properties = NavbarProps;
 
    fn create(_: &Context<Self>) -> Self {
-      return Navbar{
-         navActive: false,
-      };
+      return Navbar { navActive: false };
    }
 
    fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
@@ -98,5 +96,5 @@ use {
    crate::{Msg, Route},
    router::prelude::*,
    ybc::*,
-   yew::prelude::*
+   yew::prelude::*,
 };

@@ -8,8 +8,8 @@ pub fn NewConfig() -> api::Settings {
    return api::DefaultSettings();
 }
 
-pub mod assets;
 pub mod api;
+pub mod assets;
 
 #[macro_use]
 extern crate async_graphql;

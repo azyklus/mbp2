@@ -1,7 +1,5 @@
 async fn getIndex() -> Result<NamedFile, NotFound<String>> {
-   NamedFile::open("index.html")
-      .await
-      .map_err(|e| NotFound(e.to_string()))
+   NamedFile::open("index.html").await.map_err(|e| NotFound(e.to_string()))
 }
 
 #[rocket::get("/<path..>")]
@@ -48,12 +46,15 @@ impl Handler for MainController {
 }
 */
 
-use rocket::{catcher, Data, Request, Route};
 use rocket::fs::NamedFile;
 use rocket::http::{Method::*, Status};
-use rocket::outcome::{IntoOutcome, try_outcome};
-use rocket::response::{Responder, status::{Custom, NotFound}};
+use rocket::outcome::{try_outcome, IntoOutcome};
+use rocket::response::{
+   status::{Custom, NotFound},
+   Responder,
+};
 use rocket::route::{self, Handler, Outcome};
+use rocket::{catcher, Data, Request, Route};
 use std::path::PathBuf;
 
 pub mod api;

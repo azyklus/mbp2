@@ -1,4 +1,4 @@
-pub struct BlogLayout{}
+pub struct BlogLayout {}
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct BlogProps {
@@ -13,7 +13,7 @@ impl Component for BlogLayout {
    type Properties = BlogProps;
 
    fn create(_: &Context<Self>) -> Self {
-      return BlogLayout{};
+      return BlogLayout {};
    }
 
    fn view(&self, ctx: &Context<Self>) -> Html {
@@ -27,7 +27,4 @@ impl Component for BlogLayout {
    }
 }
 
-use {
-   crate::Msg,
-   ybc::*, yew::prelude::*,
-};
+use {crate::Msg, ybc::*, yew::prelude::*};

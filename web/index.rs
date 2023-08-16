@@ -19,11 +19,11 @@ fn main() {
 #[derive(Routable, PartialEq, Eq, Clone, Debug)]
 pub enum Route {
    #[at("/posts/:id")]
-   Post{ id: u128 },
+   Post { id: u128 },
    #[at("/posts")]
    PostIndex,
    #[at("/authors/:id")]
-   Author{ id: u128 },
+   Author { id: u128 },
    #[at("/authors")]
    AuthorIndex,
    #[at("/")]
@@ -38,10 +38,7 @@ pub enum Msg {
 }
 
 use {
-   self::{
-      components::App,
-      pages::*,
-   },
+   self::{components::App, pages::*},
    log::Level,
    router::prelude::*,
    wasm_logger::Config,

@@ -10,7 +10,7 @@ impl Display for FetchError {
    }
 }
 
-impl Error for FetchError{}
+impl Error for FetchError {}
 
 /// The possible states a fetch request can be in.
 #[derive(Debug, Clone, PartialEq)]

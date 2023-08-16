@@ -1,116 +1,116 @@
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ClientConfig {
-   #[serde(rename="name")]
+   #[serde(rename = "name")]
    pub Name: String,
-   #[serde(rename="summary")]
+   #[serde(rename = "summary")]
    pub Summary: String,
-   #[serde(rename="tags")]
+   #[serde(rename = "tags")]
    pub Tags: Vec<String>,
-   #[serde(rename="nsfw")]
+   #[serde(rename = "nsfw")]
    pub NSFW: bool,
-   #[serde(rename="logo")]
+   #[serde(rename = "logo")]
    pub Logo: String,
-   #[serde(rename="version")]
+   #[serde(rename = "version")]
    pub Version: String,
-   #[serde(rename="appearanceVariables")]
+   #[serde(rename = "appearanceVariables")]
    pub AppearanceVariables: HashMap<String, String>,
-   #[serde(rename="customStyles")]
+   #[serde(rename = "customStyles")]
    pub CustomStyles: String,
-   #[serde(rename="socialHandles")]
+   #[serde(rename = "socialHandles")]
    pub SocialHandles: Vec<SocialHandle>,
-   #[serde(rename="federation")]
+   #[serde(rename = "federation")]
    pub Federation: Federation,
-   #[serde(rename="notifications")]
+   #[serde(rename = "notifications")]
    pub Notifications: Notifications,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Authorisation {
-   #[serde(rename="indieAuthEnabled")]
+   #[serde(rename = "indieAuthEnabled")]
    pub IndieAuthEnabled: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Federation {
-   #[serde(rename="enabled")]
+   #[serde(rename = "enabled")]
    pub Enabled: bool,
-   #[serde(rename="account")]
+   #[serde(rename = "account")]
    pub Account: String,
-   #[serde(rename="followerCount")]
+   #[serde(rename = "followerCount")]
    pub FollowerCount: usize,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Notifications {
-   #[serde(rename="browser")]
+   #[serde(rename = "browser")]
    pub Browser: Browser,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Browser {
-   #[serde(rename="enabled")]
+   #[serde(rename = "enabled")]
    pub Enabled: bool,
-   #[serde(rename="publicKey")]
+   #[serde(rename = "publicKey")]
    pub PublicKey: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct SocialHandle {
-   #[serde(rename="platform")]
+   #[serde(rename = "platform")]
    pub Platform: String,
-   #[serde(rename="url")]
+   #[serde(rename = "url")]
    pub Url: String,
-   #[serde(rename="icon")]
+   #[serde(rename = "icon")]
    pub Icon: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Settings {
-   #[serde(rename="addr")]
+   #[serde(rename = "addr")]
    pub Addr: String,
-   #[serde(rename="maxSocketPayloadSize")]
+   #[serde(rename = "maxSocketPayloadSize")]
    pub MaxSocketPayloadSize: usize,
-   #[serde(rename="socketHostOverride")]
+   #[serde(rename = "socketHostOverride")]
    pub SocketHostOverride: Option<String>,
-   #[serde(rename="client")]
+   #[serde(rename = "client")]
    pub Client: ClientConfig,
-   #[serde(rename="db")]
+   #[serde(rename = "db")]
    pub Db: DbSettings,
-   #[serde(rename="a0")]
+   #[serde(rename = "a0")]
    pub Auth0: Auth0Settings,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DbSettings {
-   #[serde(rename="addr")]
+   #[serde(rename = "addr")]
    pub Addr: String,
-   #[serde(rename="state")]
+   #[serde(rename = "state")]
    pub State: String,
-   #[serde(rename="w")]
+   #[serde(rename = "w")]
    pub WriteConcern: String,
-   #[serde(rename="username")]
+   #[serde(rename = "username")]
    pub Username: String,
-   #[serde(rename="password")]
+   #[serde(rename = "password")]
    pub Password: String,
-   #[serde(rename="retryReads")]
+   #[serde(rename = "retryReads")]
    pub RetryReads: bool,
-   #[serde(rename="retryWrites")]
+   #[serde(rename = "retryWrites")]
    pub RetryWrites: bool,
-   #[serde(rename="localThreshold")]
+   #[serde(rename = "localThreshold")]
    pub LocalThreshold: usize,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Auth0Settings {
-   #[serde(rename="audience")]
+   #[serde(rename = "audience")]
    pub Audience: String,
-   #[serde(rename="domain")]
+   #[serde(rename = "domain")]
    pub Domain: String,
-   #[serde(rename="id")]
+   #[serde(rename = "id")]
    pub Identifier: String,
-   #[serde(rename="issuer")]
+   #[serde(rename = "issuer")]
    pub Issuer: String,
-   #[serde(rename="secret")]
+   #[serde(rename = "secret")]
    pub Secret: String,
 }
 

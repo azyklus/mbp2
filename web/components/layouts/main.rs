@@ -1,5 +1,4 @@
-pub struct Main {
-}
+pub struct Main {}
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct MainProps {
@@ -12,7 +11,7 @@ impl Component for Main {
    type Properties = MainProps;
 
    fn create(_: &Context<Self>) -> Self {
-      return Main{};
+      return Main {};
    }
 
    fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
@@ -32,8 +31,4 @@ impl Component for Main {
    }
 }
 
-use {
-   crate::Msg,
-   ybc::*,
-   yew::prelude::*,
-};
+use {crate::Msg, ybc::*, yew::prelude::*};

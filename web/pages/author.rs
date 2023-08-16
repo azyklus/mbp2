@@ -1,6 +1,6 @@
-pub struct Author{}
+pub struct Author {}
 
-pub enum AuthorMsg{}
+pub enum AuthorMsg {}
 
 #[derive(Clone, Debug, PartialEq, Properties)]
 pub struct AuthorProps {
@@ -14,29 +14,27 @@ impl Component for Author {
    type Properties = AuthorProps;
 
    fn create(_: &Context<Self>) -> Self {
-      return Author{};
+      return Author {};
    }
 
    fn view(&self, _: &Context<Self>) -> Html {
-      html!{}
+      html! {}
    }
 }
 
-pub struct AuthorIndex{}
+pub struct AuthorIndex {}
 
 impl Component for AuthorIndex {
    type Message = AuthorMsg;
    type Properties = ();
 
    fn create(_: &Context<Self>) -> Self {
-      return AuthorIndex{};
+      return AuthorIndex {};
    }
 
    fn view(&self, _: &Context<Self>) -> Html {
-      html!{}
+      html! {}
    }
 }
 
-use {
-   ybc::*, yew::prelude::*
-};
+use {ybc::*, yew::prelude::*};

@@ -1,20 +1,14 @@
-fn wowHelper(
-    h: &Helper<'_, '_>,
-    _: &Handlebars,
-    _: &Context,
-    _: &mut RenderContext<'_, '_>,
-    out: &mut dyn Output
-) -> HelperResult {
-    if let Some(param) = h.param(0) {
-        out.write("<b><i>")?;
-        out.write(&param.value().render())?;
-        out.write("</b></i>")?;
-    }
+fn wowHelper(h: &Helper<'_, '_>, _: &Handlebars, _: &Context, _: &mut RenderContext<'_, '_>, out: &mut dyn Output) -> HelperResult {
+   if let Some(param) = h.param(0) {
+      out.write("<b><i>")?;
+      out.write(&param.value().render())?;
+      out.write("</b></i>")?;
+   }
 
-    Ok(())
+   Ok(())
 }
 
-#[doc="Customize Handlebars model handler."]
+#[doc = "Customize Handlebars model handler."]
 pub fn Customise(hbs: &mut Handlebars) -> Result<(), Box<dyn std::error::Error>> {
    // TODO: Add more registers as needed.
    if let Ok(var) = std::env::var("WORK_DIR") {
@@ -33,17 +27,6 @@ pub fn Customise(hbs: &mut Handlebars) -> Result<(), Box<dyn std::error::Error>>
 pub mod home;
 
 use {
-   handlebars::{
-      Context,
-      Handlebars,
-      Helper,
-      HelperResult,
-      RenderContext,
-      JsonRender,
-      Output,
-   },
-   std::path::{
-      Path,
-      PathBuf
-   },
+   handlebars::{Context, Handlebars, Helper, HelperResult, JsonRender, Output, RenderContext},
+   std::path::{Path, PathBuf},
 };

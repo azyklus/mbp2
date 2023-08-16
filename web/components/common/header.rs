@@ -1,4 +1,4 @@
-pub struct ContentHeader{}
+pub struct ContentHeader {}
 
 #[derive(Debug, PartialEq, Properties)]
 pub struct ContentHeaderProps {
@@ -21,10 +21,10 @@ impl Component for ContentHeader {
    type Properties = ContentHeaderProps;
 
    fn create(_: &Context<Self>) -> Self {
-      return ContentHeader{};
+      return ContentHeader {};
    }
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
+   fn view(&self, ctx: &Context<Self>) -> Html {
       // TODO: Implement content header component.
       return html!(
          <Container classes={ctx.props().classes.clone()}>
@@ -36,8 +36,4 @@ impl Component for ContentHeader {
    }
 }
 
-use {
-   crate::Msg,
-   ybc::*,
-   yew::prelude::*,
-};
+use {crate::Msg, ybc::*, yew::prelude::*};

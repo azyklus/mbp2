@@ -5,7 +5,7 @@ impl Component for NotFound {
    type Properties = ();
 
    fn create(_: &Context<Self>) -> Self {
-      return NotFound{};
+      return NotFound {};
    }
 
    fn view(&self, ctx: &Context<Self>) -> Html {

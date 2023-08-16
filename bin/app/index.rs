@@ -2,7 +2,7 @@
 #![warn(missing_docs)]
 #![allow(non_snake_case)]
 
-lazy_static!{
+lazy_static! {
    /// Root and /home routes.
    pub static ref HOME_ROUTES: Vec<Route> = rocket::routes![
       DistFiles, Index, home::Home,
@@ -20,7 +20,7 @@ lazy_static!{
    ];
 }
 
-#[tokio::main(flavor="multi_thread")]
+#[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
    // Load dotenv file.
    let Some(vp) = dotenv().ok() else { unreachable!() };
@@ -59,14 +59,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
    let dbClient: Client = DbConnCreate(cfg.Db).await.expect("db connection failed");
    // Ping the database to ensure a connection.
-   if let Ok(_) = dbClient.database("otherskies")
-      .run_command(doc!{ "ping": 1 }, None)
-      .await {
+   if let Ok(_) = dbClient.database("otherskies").run_command(doc! { "ping": 1 }, None).await {
       println!("Database connection success");
    }
 
    let graphqlSchema: GraphQLSchema = GraphQLSchema::build(QueryRoot, MutationRoot, EmptySubscription)
-      .data(dbClient.database("admin").clone())
+      .data(dbClient.database("otherskies").clone())
       .finish();
 
    let rt = rocket::custom(fig)
@@ -75,21 +73,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          let _ = models::Customise(&mut e.handlebars).unwrap();
          Ok(())
       }))
-      .manage(dbClient.database("admin").clone())
+      .manage(dbClient.database("otherskies").clone())
       .manage(graphqlSchema)
       //.mount("/", vec![index])
       .mount("/", FileServer::from(workDir))
-      .mount("/api", vec![
-         apiConfig,
-         apiRocket,
-         apiGraphql,
-         apiGraphqlGet,
-         apiGraphqlPost,
-         apiGraphqlPostMultipart,
-         apiGraphqlPlayground
-      ])
+      .mount(
+         "/api",
+         vec![
+            apiConfig,
+            apiRocket,
+            apiGraphql,
+            apiGraphqlGet,
+            apiGraphqlPost,
+            apiGraphqlPostMultipart,
+            apiGraphqlPlayground,
+         ],
+      )
       .mount("/home", vec![home]);
-      //.register("/", vec![nfc]);
+   //.register("/", vec![nfc]);
 
    // Check state and launch Rocket.
    assert!(rt.state::<String>().is_none());
@@ -103,38 +104,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 use {
    self::{
       controllers::*,
-      service::{
-         DbConnCreate,
-         QueryRoot, MutationRoot,
-         GraphQLSchema,
-      },
+      service::{DbConnCreate, GraphQLSchema, MutationRoot, QueryRoot},
    },
-   async_graphql::{Schema, EmptySubscription},
+   async_graphql::{EmptySubscription, Schema},
    bson::doc,
    dotenv::dotenv,
    figment::{
-      Figment,
-      Profile,
-      providers::{
-         Env,
-         Format,
-         Serialized,
-         Toml,
-      }
+      providers::{Env, Format, Serialized, Toml},
+      Figment, Profile,
    },
-   mbp2::api::{
-      ApplySettings,
-      DefaultSettings,
-      Settings
-   },
+   mbp2::api::{ApplySettings, DefaultSettings, Settings},
    mongodb::Client,
-   rocket::{
-      fairing::AdHoc,
-      fs::FileServer,
-      Catcher,
-      Config,
-      Route,
-   },
+   rocket::{fairing::AdHoc, fs::FileServer, Catcher, Config, Route},
    tmpl::Template,
 };
 

@@ -1,11 +1,11 @@
-pub struct App{}
+pub struct App {}
 
 impl Component for App {
    type Message = Msg;
    type Properties = ();
 
    fn create(_: &Context<Self>) -> App {
-      return App{};
+      return App {};
    }
 
    fn update(&mut self, _: &Context<Self>, msg: Self::Message) -> bool {
@@ -42,11 +42,8 @@ impl Component for App {
 
 use {
    super::common::Navbar,
-   crate::{
-      Msg,
-      Route,
-      SwitchFn,
-   },
+   crate::{Msg, Route, SwitchFn},
    router::prelude::*,
-   ybc::*, yew::prelude::*,
+   ybc::*,
+   yew::prelude::*,
 };

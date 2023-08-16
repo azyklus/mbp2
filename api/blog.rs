@@ -1,9 +1,9 @@
 #[derive(Clone, Debug, Deserialize, Serialize, SimpleObject)]
 #[graphql(complex)]
 pub struct BlogEntry {
-   #[serde(rename="metadata")]
+   #[serde(rename = "metadata")]
    pub Meta: EntryMetadata,
-   #[serde(rename="body")]
+   #[serde(rename = "body")]
    pub Body: EntryBody,
 }
 
@@ -27,9 +27,9 @@ impl BlogEntry {
 #[graphql(complex)]
 #[derive(Clone, Debug, Deserialize, Serialize, SimpleObject)]
 pub struct BlogAuthor {
-   #[serde(rename="name")]
+   #[serde(rename = "name")]
    pub Name: String,
-   #[serde(rename="id")]
+   #[serde(rename = "id")]
    pub Identifier: String,
 }
 
@@ -53,15 +53,15 @@ impl BlogAuthor {
 #[graphql(complex)]
 #[derive(Clone, Debug, Deserialize, Serialize, SimpleObject)]
 pub struct EntryMetadata {
-   #[serde(rename="author")]
+   #[serde(rename = "author")]
    pub Author: BlogAuthor,
-   #[serde(rename="title")]
+   #[serde(rename = "title")]
    pub Title: String,
-   #[serde(rename="subtitle")]
+   #[serde(rename = "subtitle")]
    pub Subtitle: String,
-   #[serde(rename="keywords")]
+   #[serde(rename = "keywords")]
    pub Keywords: Vec<String>,
-   #[serde(rename="id")]
+   #[serde(rename = "id")]
    pub Identifier: String,
 }
 
@@ -99,9 +99,9 @@ impl EntryMetadata {
 #[graphql(complex)]
 #[derive(Clone, Debug, Deserialize, Serialize, SimpleObject)]
 pub struct EntryBody {
-   #[serde(rename="headers")]
+   #[serde(rename = "headers")]
    pub Headers: Vec<EntryHeader>,
-   #[serde(rename="parts")]
+   #[serde(rename = "parts")]
    pub Parts: Vec<EntrySection>,
 }
 
@@ -156,11 +156,11 @@ impl EntryPart {
 #[graphql(complex)]
 #[derive(Clone, Debug, Deserialize, Serialize, SimpleObject)]
 pub struct EntrySection {
-   #[serde(rename="title")]
+   #[serde(rename = "title")]
    pub Title: String,
-   #[serde(rename="image_url")]
+   #[serde(rename = "image_url")]
    pub ImageUrl: String,
-   #[serde(rename="paragraphs")]
+   #[serde(rename = "paragraphs")]
    pub Paragraphs: Vec<String>,
 }
 
@@ -189,9 +189,9 @@ impl EntrySection {
 #[graphql(complex)]
 #[derive(Clone, Debug, Deserialize, Serialize, SimpleObject)]
 pub struct EntryQuote {
-   #[serde(rename="author")]
+   #[serde(rename = "author")]
    pub Author: BlogAuthor,
-   #[serde(rename="content")]
+   #[serde(rename = "content")]
    pub Content: String,
 }
 
@@ -209,9 +209,9 @@ impl EntryQuote {
 #[graphql(complex)]
 #[derive(Clone, Debug, Deserialize, Serialize, SimpleObject)]
 pub struct EntryHeader {
-   #[serde(rename="chapter")]
+   #[serde(rename = "chapter")]
    pub Chapter: i32,
-   #[serde(rename="tagline")]
+   #[serde(rename = "tagline")]
    pub Tagline: String,
 }
 
@@ -232,7 +232,4 @@ impl EntryHeader {
    }
 }
 
-use ulid::{
-   serde::*,
-   Ulid,
-};
+use ulid::{serde::*, Ulid};

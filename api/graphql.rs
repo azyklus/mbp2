@@ -12,11 +12,11 @@
 pub struct GraphQLBatchRequest(pub async_graphql::BatchRequest);
 
 impl GraphQLBatchRequest {
-    /// Shortcut method to execute the request on the executor.
+   /// Shortcut method to execute the request on the executor.
    pub async fn Execute<E>(self, executor: &E) -> GraphQLResponse
-      where
-         E: Executor, {
-         GraphQLResponse(executor.execute_batch(self.0).await)
+   where
+      E: Executor, {
+      GraphQLResponse(executor.execute_batch(self.0).await)
    }
 }
 
@@ -29,13 +29,8 @@ impl<'r> FromData<'r> for GraphQLBatchRequest {
 
       let request = async_graphql::http::receive_batch_body(
          req.headers().get_one("Content-Type"),
-         data.open(
-            req.limits()
-               .get("graphql")
-               .unwrap_or_else(|| 128.kibibytes()),
-            )
-            .compat(),
-            opts,
+         data.open(req.limits().get("graphql").unwrap_or_else(|| 128.kibibytes())).compat(),
+         opts,
       )
       .await;
 
@@ -68,9 +63,9 @@ pub struct GraphQLRequest(pub async_graphql::Request);
 impl GraphQLRequest {
    /// Shortcut method to execute the request on the schema.
    pub async fn Execute<E>(self, executor: &E) -> GraphQLResponse
-      where
-         E: Executor, {
-         GraphQLResponse(executor.execute(self.0).await.into())
+   where
+      E: Executor, {
+      GraphQLResponse(executor.execute(self.0).await.into())
    }
 
    /// Insert some data for this request.
@@ -111,19 +106,19 @@ impl From<GraphQLQuery> for GraphQLRequest {
 /// ```
 #[derive(FromForm, Debug)]
 pub struct GraphQLQuery {
-   #[field(name="query")]
+   #[field(name = "query")]
    pub Query: String,
-   #[field(name="operationName")]
+   #[field(name = "operationName")]
    pub OperationName: Option<String>,
-   #[field(name="variables")]
+   #[field(name = "variables")]
    pub Variables: Option<String>,
 }
 
 impl GraphQLQuery {
    /// Shortcut method to execute the request on the schema.
    pub async fn Execute<E>(self, executor: &E) -> GraphQLResponse
-      where
-         E: Executor, {
+   where
+      E: Executor, {
       let request: GraphQLRequest = self.into();
       request.Execute(executor).await
    }
@@ -139,7 +134,7 @@ impl<'r> FromData<'r> for GraphQLRequest {
          .and_then(|request| match request.0.into_single() {
             Ok(single) => data::Outcome::Success(Self(single)),
             Err(e) => data::Outcome::Failure((Status::BadRequest, e)),
-      })
+         })
    }
 }
 
@@ -189,17 +184,14 @@ impl<'r> Responder<'r, 'static> for GraphQLResponse {
 }
 
 use {
-   async_graphql::{
-      http::MultipartOptions,
-      Executor, ParseRequestError,
-   },
+   async_graphql::{http::MultipartOptions, Executor, ParseRequestError},
    core::any::Any,
-   std::io::Cursor,
    rocket::{
       data::{self, Data, FromData, ToByteUnit},
       form::FromForm,
       http::{ContentType, Header, Status},
       response::{self, Responder},
    },
+   std::io::Cursor,
    tokio_util::compat::TokioAsyncReadCompatExt,
 };

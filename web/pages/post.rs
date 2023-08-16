@@ -1,4 +1,4 @@
-pub struct BlogPost{}
+pub struct BlogPost {}
 
 pub enum BlogPostMsg {
    AddFavourite,
@@ -36,21 +36,21 @@ impl Component for BlogPost {
 
 // INDEX PAGE //
 
-pub struct BlogPostIndex{}
+pub struct BlogPostIndex {}
 
 impl Component for BlogPostIndex {
    type Message = BlogPostMsg;
    type Properties = ();
 
    fn create(ctx: &Context<Self>) -> Self {
-      return BlogPostIndex{};
+      return BlogPostIndex {};
    }
 
    fn view(&self, ctx: &Context<Self>) -> Html {
       return html!(
          <Container>
             <Blog>
-               
+
             </Blog>
          </Container>
       );
@@ -58,9 +58,7 @@ impl Component for BlogPostIndex {
 }
 
 use {
-   crate::components::{
-      common::Markup,
-      layouts::Blog,
-   },
-   ybc::*, yew::prelude::*
+   crate::components::{common::Markup, layouts::Blog},
+   ybc::*,
+   yew::prelude::*,
 };

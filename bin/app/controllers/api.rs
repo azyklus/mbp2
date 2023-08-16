@@ -10,11 +10,7 @@ pub fn Rocket() -> String {
 
 #[rocket::get("/graphql")]
 pub fn GraphiQL() -> RawHtml<String> {
-   return RawHtml(
-      GraphiQLSource::build()
-         .endpoint("/api/graphql")
-         .finish()
-   );
+   return RawHtml(GraphiQLSource::build().endpoint("/api/graphql").finish());
 }
 
 #[rocket::get("/graphql/playground")]
@@ -28,12 +24,12 @@ pub async fn GetGraphqlHandler(query: GraphQLQuery, schema: &State<GraphQLSchema
    query.Execute(schema.inner()).await
 }
 
-#[rocket::post("/graphql", data="<request>", format="application/json", rank=1)]
+#[rocket::post("/graphql", data = "<request>", format = "application/json", rank = 1)]
 pub async fn PostGraphqlHandler(request: GraphQLRequest, schema: &State<GraphQLSchema>) -> GraphQLResponse {
    request.Execute(schema.inner()).await
 }
 
-#[rocket::post("/graphql", data="<request>", format="multipart/form-data", rank=2)]
+#[rocket::post("/graphql", data = "<request>", format = "multipart/form-data", rank = 2)]
 pub async fn PostGraphqlHandlerMultipart(request: GraphQLRequest, schema: &State<GraphQLSchema>) -> GraphQLResponse {
    request.Execute(schema.inner()).await
 }
@@ -43,12 +39,7 @@ pub fn ReadAppConfig() {}
 
 use {
    crate::service::GraphQLSchema,
-   async_graphql::http::{
-      GraphiQLSource, GraphQLPlaygroundConfig,
-      playground_source,
-   },
-   mbp2::api::{
-      GraphQLRequest, GraphQLResponse, GraphQLQuery
-   },
-   rocket::{response::content::RawHtml, Config, State}
+   async_graphql::http::{playground_source, GraphQLPlaygroundConfig, GraphiQLSource},
+   mbp2::api::{GraphQLQuery, GraphQLRequest, GraphQLResponse},
+   rocket::{response::content::RawHtml, Config, State},
 };
