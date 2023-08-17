@@ -59,7 +59,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
    let dbClient: Client = DbConnCreate(cfg.Db).await.expect("db connection failed");
    // Ping the database to ensure a connection.
-   if let Ok(_) = dbClient.database("otherskies").run_command(doc! { "ping": 1 }, None).await {
+   if let Ok(_) = dbClient.database("otherskies").run_command(doc!{ "ping": 1 }, None).await {
       println!("Database connection success");
    }
 
@@ -90,7 +90,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
          ],
       )
       .mount("/home", vec![home]);
-   //.register("/", vec![nfc]);
+      //.register("/", vec![nfc]);
 
    // Check state and launch Rocket.
    assert!(rt.state::<String>().is_none());
@@ -104,18 +104,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 use {
    self::{
       controllers::*,
-      service::{DbConnCreate, GraphQLSchema, MutationRoot, QueryRoot},
+      service::{
+         DbConnCreate, GraphQLSchema,
+         MutationRoot, QueryRoot
+      },
    },
-   async_graphql::{EmptySubscription, Schema},
+   async_graphql::EmptySubscription,
    bson::doc,
    dotenv::dotenv,
    figment::{
-      providers::{Env, Format, Serialized, Toml},
+      providers::{
+         Env, Format,
+         Serialized, Toml
+      },
       Figment, Profile,
    },
-   mbp2::api::{ApplySettings, DefaultSettings, Settings},
+   mbp2::api::{
+      ApplySettings,
+      DefaultSettings,
+      Settings
+   },
    mongodb::Client,
-   rocket::{fairing::AdHoc, fs::FileServer, Catcher, Config, Route},
+   rocket::{
+      fairing::AdHoc,
+      fs::FileServer,
+      Catcher, Config, Route
+   },
    tmpl::Template,
 };
 

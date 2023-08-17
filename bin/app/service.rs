@@ -80,8 +80,13 @@ pub struct MutationRoot;
 impl MutationRoot {
    /// Create a blog entry in our MongoDB collection ("otherskies.entries").
    /// Takes a `&Context` receiver and a parameter for the new blog entry.
-   pub async fn createEntry(&self, ctx: &Context<'_>, #[graphql(desc = "The new entry to be created.")] newEntry: NewBlogEntry) -> BlogEntry {
-      let database: &Database = ctx.data::<Database>().expect("database data not present");
+   pub async fn createEntry(
+      &self,
+      ctx: &Context<'_>,
+      #[graphql(desc = "The new entry to be created.")]
+      newEntry: NewBlogEntry,
+   ) -> BlogEntry {
+      let database: &Database = ctx.data::<Database>().expect("failed to fetch database");
       let collection: Collection<BlogEntry> = database.collection("entries");
 
       let mut newHeaders: Vec<EntryHeader> = vec![];
@@ -145,6 +150,49 @@ impl MutationRoot {
       collection.insert_one(&blogAuthor, None).await.expect("could not insert new author");
       blogAuthor
    }
+
+   /// removeEntry removes a blog entry from the database collection ("otherskies.entries").
+   /// Takes a `&Context` receiver, a `&str` for an identifier, and a [`BlogEntry`] for the
+   /// entry to be deleted.
+   pub async fn removeEntry(
+      &self,
+      ctx: &Context<'_>,
+      #[graphql(desc="The identifier of the entry.")]
+      identifier: String,
+      #[graphql(desc="The blog entry to be deleted.")]
+      entry: NewBlogEntry,
+   ) -> Vec<BlogEntry> {
+      // Fetch our database and select the collection we need to modify.
+      let database: &Database = ctx.data::<Database>().expect("failed to fetch database");
+      let collection: Collection<BlogEntry> = database.collection("entries");
+
+      // Set the filters for the entry we need to delete.
+      let oid: ObjectId = ObjectId::parse_str(identifier.as_str()).expect("invalid identifier");
+      let filter = doc!{
+         "_id": oid,
+         "meta": {
+            "author": {
+               "name": entry.meta.Author.Name.to_owned(),
+               "identifier": entry.meta.Author.Identifier.to_owned(),
+            },
+            "title": entry.meta.Title.to_owned(),
+            "subtitle": entry.meta.Subtitle.to_owned(),
+            "keywords": entry.meta.Keywords.as_slice(),
+         },
+      };
+
+      // Delete the entry.
+      collection.delete_one(filter, None).await.expect("failed to delete entry");
+
+      // Retrieve and return the entries we have left.
+      let mut cursor = collection.find(None, None).await.unwrap();
+      let mut entries: Vec<BlogEntry> = vec![];
+      while let Some(entry) = cursor.try_next().await.unwrap() {
+         entries.push(entry);
+      }
+
+      entries
+   }
 }
 
 /*
@@ -165,7 +213,7 @@ impl FromContext<DbContext> for Database {
 
 use {
    async_graphql::{Context, EmptySubscription, FieldResult, Schema},
-   bson::doc,
+   bson::{doc, oid::ObjectId},
    futures::TryStreamExt,
    mbp2::api::*,
    mongodb::{
