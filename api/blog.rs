@@ -15,7 +15,7 @@ pub struct NewBlogEntry {
 
 #[ComplexObject]
 impl BlogEntry {
-   pub async fn metadata(&self) -> EntryMetadata {
+   pub async fn meta(&self) -> EntryMetadata {
       self.Meta.clone()
    }
 
@@ -75,8 +75,8 @@ pub struct NewEntryMetadata {
 
 #[ComplexObject]
 impl EntryMetadata {
-   pub async fn author(&self) -> String {
-      format!("{}({})", self.Author.Name, self.Author.Identifier.to_string())
+   pub async fn author(&self) -> BlogAuthor {
+      self.Author.clone()
    }
 
    pub async fn title(&self) -> String {
