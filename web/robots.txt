@@ -1,4 +1,7 @@
 User-Agent: GPTBot
 Disallow: /
 
+User-Agent: Googlebot
+Allow: /posts
+Disallow: /
 Sitemap: /sitemap.xml

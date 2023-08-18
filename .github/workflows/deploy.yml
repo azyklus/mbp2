@@ -1,0 +1,52 @@
+name: DEPLOY_TO_EC2
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    branches: [ trunk ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
+    - name: Install WebAssembly target
+      run: rustup target add wasm32-unknown-unknown
+
+    - name: Install trunk
+      run: cargo install trunk
+
+    - name: Build Yew Rust app
+      run: trunk build --release
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Deploy to EC2
+      env:
+        PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        HOST: ${{ secrets.EC2_HOST }}
+        USER: ${{ secrets.EC2_USER }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+        rsync -avzr --delete --exclude '.git/' --exclude '.github/' -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" ./dist/ $USER@$HOST:~/dist
+        rm -f private_key.pem
