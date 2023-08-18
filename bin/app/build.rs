@@ -19,10 +19,11 @@ fn main() {
    let options = CopyOptions::new();
    dir::create("dist/static", true).expect("could not create destination dir");
    dir::copy("static", "dist", &options).expect("could not copy static assets");
+   fs::copy("robots.txt", "dist/robots.txt").unwrap();
 
    // Return our current working directory to the project root.
    env::set_current_dir(root).expect("failed to set working dir");
 }
 
 use fs_extra::{dir, dir::CopyOptions};
-use std::{env, process::Command};
+use std::{env, fs, process::Command};

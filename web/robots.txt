@@ -1,0 +1,4 @@
+User-Agent: GPTBot
+Disallow: /
+
+Sitemap: /sitemap.xml
