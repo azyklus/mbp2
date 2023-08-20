@@ -10,6 +10,8 @@ pub fn NewConfig() -> api::Settings {
 
 pub mod api;
 pub mod assets;
+pub mod models;
+pub mod service;
 
 #[macro_use]
 extern crate async_graphql;

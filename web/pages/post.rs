@@ -32,13 +32,12 @@ impl Component for BlogPost {
    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
       return match msg {
          BlogPostMsg::RetrievePost => {
-            let id = ctx.props().id.clone();
-            let query = PostQuery::new(id);
-            let queryJson = serde_json::to_string_pretty(&query).unwrap();
+            let query = PostQuery::new(ctx.props().id.clone());
+            let json = serde_json::to_string_pretty(&query).unwrap();
             let url = Url::parse("0.0.0.0/api/graphql").unwrap();
             let res = Client::new()
                .get(url)
-               .body(queryJson)
+               .body(json)
                .send();
 
             let jsonValue: BlogPostEx = serde_json::from_value(res.unwrap().json().unwrap()).unwrap();

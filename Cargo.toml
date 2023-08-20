@@ -11,6 +11,7 @@ path = "index.rs"
 
 [dependencies]
 common_macros = "0.1.1"
+handlebars = { version = "4.3.7", features = ["dir_source"] }
 lazy_static = "1.4.0"
 serde = { version = "1.0.183", features = ["derive"] }
 serde_json = "1.0.104"

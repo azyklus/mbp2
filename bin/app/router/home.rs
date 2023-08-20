@@ -31,5 +31,5 @@ pub fn Home() -> Template {
    );
 }
 
-use crate::models::home::HomeModel;
+use mbp2::models::HomeModel;
 use tmpl::Template;

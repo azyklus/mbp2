@@ -24,7 +24,8 @@ pub fn Customise(hbs: &mut Handlebars) -> Result<(), Box<dyn std::error::Error>>
    return Ok(());
 }
 
-pub mod home;
+mod home;
+pub use self::home::*;
 
 use {
    handlebars::{Context, Handlebars, Helper, HelperResult, JsonRender, Output, RenderContext},

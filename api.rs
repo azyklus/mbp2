@@ -26,12 +26,12 @@ pub fn ApplySettings(cfg: &mut Settings) -> Result<bool, io::Error> {
 
 #[inline(always)]
 pub fn DefaultSettings() -> Settings {
-   return Settings {
+   return Settings{
       Addr: String::new(),
       MaxSocketPayloadSize: 0,
       SocketHostOverride: None,
       Client: DefaultClientConfig(),
-      Db: DbSettings {
+      Db: DbSettings{
          Addr: String::new(),
          State: String::new(),
          WriteConcern: String::new(),
@@ -41,7 +41,7 @@ pub fn DefaultSettings() -> Settings {
          RetryWrites: false,
          LocalThreshold: 15,
       },
-      Auth0: Auth0Settings {
+      Auth0: Auth0Settings{
          Audience: String::new(),
          Domain: String::new(),
          Identifier: String::new(),
@@ -56,7 +56,7 @@ pub fn DefaultSettings() -> Settings {
 /// [`ClientConfig`]: self::config::ClientConfig
 #[inline(always)]
 pub fn DefaultClientConfig() -> ClientConfig {
-   return ClientConfig {
+   return ClientConfig{
       Name: String::new(),
       Summary: String::new(),
       Tags: vec![],
@@ -66,13 +66,13 @@ pub fn DefaultClientConfig() -> ClientConfig {
       AppearanceVariables: hash_map! {},
       CustomStyles: String::new(),
       SocialHandles: vec![],
-      Federation: Federation {
+      Federation: Federation{
          Enabled: true,
          Account: String::new(),
          FollowerCount: 0,
       },
-      Notifications: Notifications {
-         Browser: Browser {
+      Notifications: Notifications{
+         Browser: Browser{
             Enabled: false,
             PublicKey: String::new(),
          },
