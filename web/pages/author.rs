@@ -6,7 +6,7 @@ pub enum AuthorMsg {}
 pub struct AuthorProps {
    #[prop_or_default]
    pub name: String,
-   pub id: u128,
+   pub id: String,
 }
 
 impl Component for Author {

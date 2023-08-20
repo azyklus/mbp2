@@ -19,11 +19,11 @@ fn main() {
 #[derive(Routable, PartialEq, Eq, Clone, Debug)]
 pub enum Route {
    #[at("/posts/:id")]
-   Post { id: u128 },
+   Post { id: String },
    #[at("/posts")]
    PostIndex,
    #[at("/authors/:id")]
-   Author { id: u128 },
+   Author { id: String },
    #[at("/authors")]
    AuthorIndex,
    #[at("/")]
@@ -47,6 +47,7 @@ use {
 
 mod components;
 mod pages;
+mod types;
 mod utils;
 
 extern crate gloo;
@@ -55,6 +56,7 @@ extern crate pulldown_cmark as cmark;
 extern crate reqwasm;
 #[macro_use]
 extern crate serde;
+extern crate serde_json;
 extern crate wasm_logger;
 extern crate web_sys as web;
 extern crate ybc;
