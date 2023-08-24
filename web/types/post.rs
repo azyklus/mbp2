@@ -8,6 +8,22 @@ impl PostQuery {
       let query: String = format!("query {{ post {{ meta({}) {{ author {{ name id }} title subtitle keywords }} body {{ headers sections }} }} }}", id);
       return PostQuery{ query };
    }
+
+   pub fn all() -> PostQuery {
+      let query: String = "query { posts { meta { author { name id } title subtitle keywords id } body { headers sections } } }".to_string();
+      return PostQuery{ query };
+   }
+
+   pub fn author(author: BlogAuthor) -> PostQuery {
+      let query: String = format!("query {{ post {{ meta {{ author({}, {}) title subtitle keywords }} body {{ headers sections }} }} }}", author.name, author.id);
+      return PostQuery{ query };
+   }
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct PostListInfo {
+   pub posts: Vec<PostMetadata>,
+   pub count: u32,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]

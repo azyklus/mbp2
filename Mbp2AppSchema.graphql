@@ -1,0 +1,103 @@
+type BlogAuthor {
+	name: String!
+	identifier: String!
+	id: String!
+}
+
+type BlogEntry {
+	meta: EntryMetadata!
+	body: EntryBody!
+}
+
+
+type EntryBody {
+	headers: [EntryHeader!]!
+	parts: [EntrySection!]!
+	sections: [EntrySection!]!
+}
+
+type EntryHeader {
+	chapter: Int!
+	tagline: String!
+}
+
+type EntryMetadata {
+	author: BlogAuthor!
+	title: String!
+	subtitle: String!
+	keywords: [String!]!
+	identifier: String!
+	id: String!
+}
+
+type EntrySection {
+	title: String!
+	imageUrl: String!
+	paragraphs: [String!]!
+}
+
+
+
+
+type MutationRoot {
+	"""
+	Create a blog entry in our MongoDB collection ("otherskies.entries").
+	Takes a `&Context` receiver and a parameter for the new blog entry.
+	"""
+	createEntry(newEntry: NewBlogEntry!): BlogEntry!
+	"""
+	Add an author to our MongoDB collection ("otherskies.authors").
+	Takes a `&Context` receiver and a parameter for the new author.
+	"""
+	addAuthor(newAuthor: NewBlogAuthor!): BlogAuthor!
+	"""
+	removeEntry removes a blog entry from the database collection ("otherskies.entries").
+	Takes a `&Context` receiver, a `&str` for an identifier, and a [`BlogEntry`] for the
+	entry to be deleted.
+	"""
+	removeEntry(identifier: String!, entry: NewBlogEntry!): [BlogEntry!]!
+}
+
+input NewBlogAuthor {
+	name: String!
+	identifier: String!
+}
+
+input NewBlogEntry {
+	meta: NewEntryMetadata!
+	body: NewEntryBody!
+}
+
+input NewEntryBody {
+	headers: [NewEntryHeader!]!
+	parts: [NewEntrySection!]!
+}
+
+input NewEntryHeader {
+	chapter: Int!
+	tagline: String!
+}
+
+input NewEntryMetadata {
+	author: NewBlogAuthor!
+	title: String!
+	subtitle: String!
+	keywords: [String!]!
+}
+
+input NewEntrySection {
+	title: String!
+	imageUrl: String!
+	paragraphs: [String!]!
+}
+
+type QueryRoot {
+	authors: [BlogAuthor!]!
+	posts: [BlogEntry!]!
+}
+
+
+schema {
+	query: QueryRoot
+	mutation: MutationRoot
+}

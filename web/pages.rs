@@ -8,4 +8,4 @@ mod not_found;
 pub use not_found::NotFound;
 
 mod post;
-pub use post::{BlogPost, BlogPostIndex};
+pub use post::{BlogPost, PostIndex};
