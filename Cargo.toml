@@ -18,6 +18,10 @@ serde_json = "1.0.104"
 serde_derive = "1.0.183"
 tokio-util = { version = "*", default-features = false, features = ["compat"] }
 ulid = { version = "1.0.0", features = ["serde"] }
+aes = "0.8.3"
+rand = { version = "0.8.5", features = ["serde"] }
+cbc = { version = "0.1.2", features = ["std"] }
+hex = { version = "0.4.3", features = ["serde"] }
 
 [dependencies.async-graphql]
 git = "https://github.com/async-graphql/async-graphql"

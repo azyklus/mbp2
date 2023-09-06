@@ -10,13 +10,16 @@ pub fn NewConfig() -> api::Settings {
 
 pub mod api;
 pub mod assets;
+pub mod crypto;
 pub mod models;
 pub mod service;
 
 #[macro_use]
 extern crate async_graphql;
+extern crate cbc;
 #[macro_use]
 extern crate common_macros as macros;
+extern crate rand;
 extern crate rocket;
 #[macro_use]
 extern crate serde;
