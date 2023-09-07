@@ -212,6 +212,7 @@ impl FromContext<DbContext> for Database {
 */
 
 use {
+   crate::models::*,
    async_graphql::{Context, EmptySubscription, FieldResult, Schema},
    bson::{doc, oid::ObjectId},
    futures::TryStreamExt,

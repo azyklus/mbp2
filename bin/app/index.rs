@@ -143,6 +143,8 @@ use {
    tokio::task::JoinHandle,
 };
 
+mod config;
+mod models;
 mod router;
 mod service;
 

@@ -1,7 +1,14 @@
 [package]
-name = "mbp2"
-version = "0.1.0"
+authors = ["Az <azyklus@disroot.org>", "Meakoda Wilson <meakoda2@gmail.com>"]
+categories = ["network-programming", "asynchronous", "blogging", "fediverse"]
+description = "A common-utility library for federated projects."
 edition = "2021"
+homepage = "https://mbp2.blog/src/foundation"
+keywords = ["federation", "graphql", "database", "mbp2"]
+license = "Apache-2.0"
+name = "mbp2"
+repository = "https://gitlab.com/azyklus/mbp2"
+version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -9,24 +16,58 @@ edition = "2021"
 name = "mbp2"
 path = "index.rs"
 
+[features]
+default=["crypto", "juniper-gql"]
+async-gql=["async-graphql", "rocket", "rocket_dyn_templates"]
+crypto=["aes","cbc", "hex", "rand"]
+juniper-gql=["axum", "juniper", "juniper_graphql_ws", "tower-service"]
+
 [dependencies]
+aes = { version = "0.8.3", optional = true }
+anyhow = "1.0.47"
+axum = { version = "0.6.20", optional = true, features = ["headers", "ws"] }
+bytes = { version = "1.0.1", features = ["serde"] }
+cbc = { version = "0.1.2", optional = true, features = ["std"] }
 common_macros = "0.1.1"
+futures = "0.3.22"
 handlebars = { version = "4.3.7", features = ["dir_source"] }
+hex = { version = "0.4.3", optional = true, features = ["serde"] }
 lazy_static = "1.4.0"
+rand = { version = "0.8.5", optional = true, features = ["serde"] }
 serde = { version = "1.0.183", features = ["derive"] }
 serde_json = "1.0.104"
 serde_derive = "1.0.183"
+thiserror = "1.0"
+tokio = { version = "1.0", features = ["rt-multi-thread"] }
+tokio-stream = "0.1.14"
 tokio-util = { version = "*", default-features = false, features = ["compat"] }
+tower-service = { version = "0.3", optional = true }
 ulid = { version = "1.0.0", features = ["serde"] }
-aes = "0.8.3"
-rand = { version = "0.8.5", features = ["serde"] }
-cbc = { version = "0.1.2", features = ["std"] }
-hex = { version = "0.4.3", features = ["serde"] }
+
+[dependencies.futures-util]
+version = "0.3.0"
+features = [
+  "std",
+  "io",
+  "sink",
+  "async-await",
+  "async-await-macro",
+]
+
+[dependencies.juniper]
+version = "0.15.11"
+default-features = false
+optional = true
+
+[dependencies.juniper_graphql_ws]
+version = "0.2.6"
+optional = true
 
 [dependencies.async-graphql]
 git = "https://github.com/async-graphql/async-graphql"
 branch = "master"
 version = "^6.0"
+optional = true
 features = [
    "apollo_tracing", "apollo_persisted_queries",
    "bson", "dynamic-schema", "graphiql", "log",
@@ -37,13 +78,23 @@ features = [
 git = "https://github.com/SergioBenitez/Rocket"
 branch = "master"
 version = "^0.5.0-rc.2"
+optional = true
 features = [ "tls" ]
 
 [dependencies.rocket_dyn_templates]
 git = "https://github.com/SergioBenitez/Rocket"
 branch = "master"
 version = "^0.1.0-rc.2"
+optional = true
 features = [ "handlebars" ]
+
+[dev-dependencies]
+env_logger = "0.8"
+juniper = { version = "0.15.11", features = ["expose-test-schema"] }
+log = "0.4"
+percent-encoding = "2.1"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+url = "2"
 
 [workspace]
 members = [
