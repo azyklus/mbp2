@@ -1,20 +1,24 @@
-#![doc = include_str!("./readme.markdown")]
+#![doc(html_root_url="https://mbp2.blog/src/foundation/latest")]
 #![allow(non_snake_case)]
-
-/// NewConfig creates a default [`Settings`] instance.
-///
-/// [`Settings`]: crate::api::config::Settings;
-pub fn NewConfig() -> api::Settings {
-   return api::DefaultSettings();
-}
 
 pub mod api;
 pub mod assets;
 #[cfg(feature="crypto")]
 pub mod crypto;
+#[cfg(any(feature="async-gql", feature="juniper-gql"))]
+pub mod gql;
 pub mod models;
 pub mod service;
 
+#[cfg(all(feature="juniper-gql", feature="gql-subs"))]
+extern crate actix;
+#[cfg(all(feature="juniper-gql", feature="gql-subs"))]
+extern crate actix_rt;
+#[macro_export]
+#[cfg(feature="juniper-gql")]
+extern crate actix_web;
+#[cfg(all(feature="juniper-gql", feature="gql-subs"))]
+extern crate actix_web_actors;
 #[cfg(feature="crypto")]
 extern crate aes;
 #[macro_use]
@@ -26,6 +30,10 @@ extern crate cbc;
 extern crate common_macros as macros;
 #[cfg(feature="crypto")]
 extern crate hex;
+#[cfg(feature="juniper-gql")]
+extern crate juniper;
+#[cfg(all(feature="juniper-gql", feature="gql-subs"))]
+extern crate juniper_graphql_ws;
 #[cfg(feature="crypto")]
 extern crate rand;
 #[cfg(feature="async-gql")]

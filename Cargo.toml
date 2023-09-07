@@ -7,7 +7,7 @@ homepage = "https://mbp2.blog/src/foundation"
 keywords = ["federation", "graphql", "database", "mbp2"]
 license = "Apache-2.0"
 name = "mbp2"
-repository = "https://gitlab.com/azyklus/mbp2"
+repository = "https://gitlab.com/azmbp2/mbp2"
 version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -17,15 +17,19 @@ name = "mbp2"
 path = "index.rs"
 
 [features]
-default=["crypto", "juniper-gql"]
+default=["crypto", "juniper-gql", "gql-subs"]
 async-gql=["async-graphql", "rocket", "rocket_dyn_templates"]
-crypto=["aes","cbc", "hex", "rand"]
-juniper-gql=["axum", "juniper", "juniper_graphql_ws", "tower-service"]
+crypto=["aes", "cbc", "hex", "rand"]
+juniper-gql=["actix-web", "juniper"]
+gql-subs=["actix", "actix-rt", "actix-web-actors", "juniper_graphql_ws"]
 
 [dependencies]
+actix = { version = "0.13", optional = true }
+actix-rt = { version = "2.2", optional = true }
+actix-web = { version = "4.4", optional = true }
+actix-web-actors = { version = "4.2.0", optional = true }
 aes = { version = "0.8.3", optional = true }
 anyhow = "1.0.47"
-axum = { version = "0.6.20", optional = true, features = ["headers", "ws"] }
 bytes = { version = "1.0.1", features = ["serde"] }
 cbc = { version = "0.1.2", optional = true, features = ["std"] }
 common_macros = "0.1.1"
@@ -41,7 +45,6 @@ thiserror = "1.0"
 tokio = { version = "1.0", features = ["rt-multi-thread"] }
 tokio-stream = "0.1.14"
 tokio-util = { version = "*", default-features = false, features = ["compat"] }
-tower-service = { version = "0.3", optional = true }
 ulid = { version = "1.0.0", features = ["serde"] }
 
 [dependencies.futures-util]

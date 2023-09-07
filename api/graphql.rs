@@ -202,9 +202,229 @@ mod __graphql {
    };
 }
 
-#[cfg(feature="juniper-gql")]
+#[cfg(feature = "juniper-gql")]
 mod __juniper {
+   #[derive(Clone, Debug, Deserialize, PartialEq)]
+   pub struct GetGqlRequest {
+      query: String,
+      #[serde(rename = "operationName")]
+      opName: Option<String>,
+      #[serde(rename = "variables")]
+      vars: Option<String>,
+   }
+
+   impl<S> From<GetGqlRequest> for GraphQLRequest<S>
+   where
+      S: ScalarValue,
+   {
+      fn from(getReq: GetGqlRequest) -> Self {
+         let GetGqlRequest { query, opName, vars } = getReq;
+         let vars = vars.map(|s| serde_json::from_str(&s).unwrap());
+         return Self::new(query, opName, vars);
+      }
+   }
+
+   use juniper::{http::GraphQLRequest, ScalarValue};
+
+   #[cfg(feature="gql-subs")]
+   pub use self::subscriptions::*;
+
+   #[cfg(feature = "gql-subs")]
+   mod subscriptions {
+      pub type ConnectionSplitSink<QueryT, MutationT, SubscriptionT, CtxT, S, I> =
+         Arc<Mutex<SplitSink<Connection<ArcSchema<QueryT, MutationT, SubscriptionT, CtxT, S>, I>, Message>>>;
+
+      pub type ConnectionSplitStream<QueryT, MutationT, SubscriptionT, CtxT, S, I> =
+         Arc<Mutex<SplitStream<Connection<ArcSchema<QueryT, MutationT, SubscriptionT, CtxT, S>, I>>>>;
+
+      pub struct SubscriptionActor<QueryT, MutationT, SubscriptionT, CtxT, S, I>
+      where
+         QueryT: GraphQLTypeAsync<S, Context = CtxT> + Send + 'static,
+         QueryT::TypeInfo: Send + Sync,
+         MutationT: GraphQLTypeAsync<S, Context = CtxT> + Send + 'static,
+         MutationT::TypeInfo: Send + Sync,
+         SubscriptionT: GraphQLSubscriptionType<S, Context = CtxT> + Send + 'static,
+         SubscriptionT::TypeInfo: Send + Sync,
+         CtxT: Unpin + Send + Sync + 'static,
+         S: ScalarValue + Send + Sync + 'static,
+         I: Init<S, CtxT> + Send,
+      {
+         gqlTx: ConnectionSplitSink<QueryT, MutationT, SubscriptionT, CtxT, S, I>,
+         gqlRx: ConnectionSplitStream<QueryT, MutationT, SubscriptionT, CtxT, S, I>,
+      }
+
+      impl<QueryT, MutationT, SubscriptionT, CtxT, S, I> StreamHandler<Result<ws::Message, ws::ProtocolError>>
+         for SubscriptionActor<QueryT, MutationT, SubscriptionT, CtxT, S, I>
+      where
+         QueryT: GraphQLTypeAsync<S, Context = CtxT> + Send + 'static,
+         QueryT::TypeInfo: Send + Sync,
+         MutationT: GraphQLTypeAsync<S, Context = CtxT> + Send + 'static,
+         MutationT::TypeInfo: Send + Sync,
+         SubscriptionT: GraphQLSubscriptionType<S, Context = CtxT> + Send + 'static,
+         SubscriptionT::TypeInfo: Send + Sync,
+         CtxT: Unpin + Send + Sync + 'static,
+         S: ScalarValue + Send + Sync + 'static,
+         I: Init<S, CtxT> + Send,
+      {
+         fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
+            let msg = msg.map(|r| Message(r));
+
+            match msg {
+               Ok(msg) => {
+                  let tx = self.gqlTx.clone();
+
+                  async move {
+                     let mut tx = tx.lock().unwrap();
+                     tx.send(msg).await.expect("Infallible: this should not happen");
+                  }
+                  .into_actor(self)
+                  .wait(ctx);
+               }
+               Err(_) => {
+                  // TODO: trace
+                  // ignore the message if there's a transport error
+               }
+            }
+         }
+      }
+
+      /// juniper -> actor
+      impl<QueryT, MutationT, SubscriptionT, CtxT, S, I> Actor for SubscriptionActor<QueryT, MutationT, SubscriptionT, CtxT, S, I>
+      where
+         QueryT: GraphQLTypeAsync<S, Context = CtxT> + Send + 'static,
+         QueryT::TypeInfo: Send + Sync,
+         MutationT: GraphQLTypeAsync<S, Context = CtxT> + Send + 'static,
+         MutationT::TypeInfo: Send + Sync,
+         SubscriptionT: GraphQLSubscriptionType<S, Context = CtxT> + Send + 'static,
+         SubscriptionT::TypeInfo: Send + Sync,
+         CtxT: Unpin + Send + Sync + 'static,
+         S: ScalarValue + Send + Sync + 'static,
+         I: Init<S, CtxT> + Send,
+      {
+         type Context = ws::WebsocketContext<Self>;
+
+         fn started(&mut self, ctx: &mut Self::Context) {
+            let stream = self.gqlRx.clone();
+            let addr = ctx.address();
+
+            let fut = async move {
+               let mut stream = stream.lock().unwrap();
+               while let Some(message) = stream.next().await {
+                  // sending the message to self so that it can be forwarded back to the client
+                  addr.do_send(ServerMessageWrapper { message });
+               }
+            }
+            .into_actor(self);
+
+            // TODO: trace
+            ctx.spawn(fut);
+         }
+
+         fn stopped(&mut self, _: &mut Self::Context) {
+            // TODO: trace
+         }
+      }
+
+      impl<QueryT, MutationT, SubscriptionT, CtxT, S, I> actix::prelude::Handler<ServerMessageWrapper<S>>
+         for SubscriptionActor<QueryT, MutationT, SubscriptionT, CtxT, S, I>
+      where
+         QueryT: GraphQLTypeAsync<S, Context = CtxT> + Send + 'static,
+         QueryT::TypeInfo: Send + Sync,
+         MutationT: GraphQLTypeAsync<S, Context = CtxT> + Send + 'static,
+         MutationT::TypeInfo: Send + Sync,
+         SubscriptionT: GraphQLSubscriptionType<S, Context = CtxT> + Send + 'static,
+         SubscriptionT::TypeInfo: Send + Sync,
+         CtxT: Unpin + Send + Sync + 'static,
+         S: ScalarValue + Send + Sync + 'static,
+         I: Init<S, CtxT> + Send,
+      {
+         type Result = ();
+
+         fn handle(&mut self, msg: ServerMessageWrapper<S>, ctx: &mut Self::Context) -> Self::Result {
+            let msg = serde_json::to_string(&msg.message);
+            match msg {
+               Ok(msg) => ctx.text(msg),
+               Err(e) => {
+                  let reason = ws::CloseReason {
+                     code: ws::CloseCode::Error,
+                     description: Some(format!("error serializing response: {}", e)),
+                  };
+
+                  // TODO: trace
+                  ctx.close(Some(reason))
+               }
+            };
+            ()
+         }
+      }
+
+      #[derive(Message)]
+      #[rtype(result = "()")]
+      pub struct ServerMessageWrapper<S>
+      where
+         S: ScalarValue + Send + Sync + 'static,
+      {
+         message: ServerMessage<S>,
+      }
+
+      pub struct Message(ws::Message);
+
+      impl<S: ScalarValue> std::convert::TryFrom<Message> for ClientMessage<S> {
+         type Error = SubsError;
+
+         fn try_from(msg: Message) -> Result<Self, Self::Error> {
+            match msg.0 {
+               ws::Message::Text(text) => serde_json::from_slice(text.as_bytes()).map_err(|e| SubsError::Serde(e)),
+               ws::Message::Close(_) => Ok(ClientMessage::ConnectionTerminate),
+               _ => Err(SubsError::UnexpectedClientMessage),
+            }
+         }
+      }
+
+      /// Errors that can happen while handling client messages
+      #[derive(Debug)]
+      pub enum SubsError {
+         /// Errors that can happen while deserializing client messages
+         Serde(serde_json::Error),
+
+         /// Error for unexpected client messages
+         UnexpectedClientMessage,
+      }
+
+      impl fmt::Display for SubsError {
+         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            match self {
+               Self::Serde(e) => write!(f, "serde error: {}", e),
+               Self::UnexpectedClientMessage => {
+                  write!(f, "unexpected message received from client")
+               }
+            }
+         }
+      }
+
+      impl std::error::Error for SubsError {}
+
+      use {
+         actix::{prelude::*, Actor, StreamHandler},
+         actix_web_actors::ws,
+         juniper::{
+            futures::{
+               stream::{SplitSink, SplitStream, StreamExt},
+               SinkExt,
+            },
+            GraphQLSubscriptionType, GraphQLTypeAsync, ScalarValue,
+         },
+         juniper_graphql_ws::{ArcSchema, ClientMessage, Connection, Init, ServerMessage},
+         std::{
+            fmt,
+            sync::{Arc, Mutex},
+         },
+      };
+   }
 }
 
-#[cfg(feature="juniper-gql")]
+#[cfg(feature = "juniper-gql")]
 mod juniper;
+
+#[cfg(feature="juniper-gql")]
+pub use self::__juniper::*;
