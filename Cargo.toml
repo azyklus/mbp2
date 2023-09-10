@@ -7,8 +7,8 @@ homepage = "https://mbp2.blog/src/foundation"
 keywords = ["federation", "graphql", "database", "mbp2"]
 license = "Apache-2.0"
 name = "mbp2"
-repository = "https://gitlab.com/azmbp2/mbp2"
-version = "0.1.0"
+repository = "https://gitlab.com/azyklus/mbp2"
+version = "0.2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -101,7 +101,5 @@ url = "2"
 
 [workspace]
 members = [
-   "web",
-   "bin/app",
    "bin/appdb",
 ]
