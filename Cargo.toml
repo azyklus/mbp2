@@ -44,7 +44,7 @@ serde_derive = "1.0.183"
 thiserror = "1.0"
 tokio = { version = "1.0", features = ["rt-multi-thread"] }
 tokio-stream = "0.1.14"
-tokio-util = { version = "*", default-features = false, features = ["compat"] }
+tokio-util = { version = "0.7.8", default-features = false, features = ["compat"] }
 ulid = { version = "1.0.0", features = ["serde"] }
 
 [dependencies.futures-util]
