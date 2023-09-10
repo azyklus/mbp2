@@ -5,6 +5,7 @@ mod __async_gql {
 
 #[cfg(feature = "juniper-gql")]
 mod __juniper {
+   /// A handler for GraphQL queries, mutations, and subscriptions.
    pub async fn GqlHandler<QueryT, MutationT, SubscriptionT, CtxT, S>(
       schema: &juniper::RootNode<'static, QueryT, MutationT, SubscriptionT, S>,
       context: &CtxT,
@@ -28,6 +29,7 @@ mod __juniper {
       }
    }
 
+   /// GraphQL handler specialised for HTTP GET requests.
    pub async fn GetGqlHandler<QueryT, MutationT, SubscriptionT, CtxT, S>(
       schema: &juniper::RootNode<'static, QueryT, MutationT, SubscriptionT, S>,
       context: &CtxT,
@@ -55,6 +57,7 @@ mod __juniper {
       Ok(response.content_type("application/json").body(bodyResponse))
    }
 
+   /// GraphQL handler specialised for HTTP POST requests.
    pub async fn PostGqlHandler<QueryT, MutationT, SubscriptionT, CtxT, S>(
       schema: &juniper::RootNode<'static, QueryT, MutationT, SubscriptionT, S>,
       context: &CtxT,
